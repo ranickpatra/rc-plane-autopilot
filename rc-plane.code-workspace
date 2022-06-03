@@ -1,0 +1,10 @@
+{
+	"folders": [
+		{
+			"path": "autopilot-mk01"
+		},
+		{
+			"path": "MPU6050-Adafruit"
+		}
+	]
+}
