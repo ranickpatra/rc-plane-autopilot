@@ -1,8 +1,16 @@
 #include <Arduino.h>
-#include <MPU6050.h>
+#include "MPU6050.h"
+
+MPU6050 mpu;
+
 
 void setup() {
-  // put your setup code here, to run once:
+
+  pinMode(LED_BUILTIN, OUTPUT); // set led builtin output
+  digitalWrite(LED_BUILTIN, LOW); // turnoff led
+
+  // initilize mpu6050
+  mpu.initialize();
 }
 
 void loop() {
