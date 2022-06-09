@@ -389,7 +389,7 @@ public:
     // MPU6050(uint8_t address = MPU6050_ADDRESS);
 
     void initialize();
-    void dump();
+    void readRawData();
 
 private:
     uint8_t devAddr;

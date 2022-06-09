@@ -69,7 +69,7 @@ void MPU6050::initialize()
 }
 
 // get raw data from mpu6050
-void MPU6050::dump()
+void MPU6050::readRawData()
 {
   Wire.beginTransmission(devAddr);     // start communicating with MPU6050
   Wire.write(MPU6050_RA_ACCEL_XOUT_H); // start reading from 0x3B

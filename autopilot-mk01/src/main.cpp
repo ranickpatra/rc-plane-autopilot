@@ -11,8 +11,12 @@ void setup() {
 
   // initilize mpu6050
   mpu.initialize();
+  delay(100); // wait for sometime
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
+  
+
+  mpu.readRawData();
+
 }
