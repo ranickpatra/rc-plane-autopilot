@@ -4,11 +4,15 @@
 			"path": "MPU6050-Adafruit"
 		},
 		{
+			"path": "YMFC-AL"
+		},
+		{
 			"name": "autopilot-mk01",
 			"path": "autopilot-mk01"
 		},
 		{
-			"path": "YMFC-AL"
+			"name": "autopilot-mk02",
+			"path": "autopilot-mk02"
 		}
 	]
 }

@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <Wire.h>
+#include "helper_3dmath.h"
 
 #ifndef _MPU6050_H_
 #define _MPU6050_H_
@@ -389,7 +390,17 @@ public:
     // MPU6050(uint8_t address = MPU6050_ADDRESS);
 
     void initialize();
-    void readRawData();
+    void readRawData(); // read the raw data
+
+    void getRawAccelData(VectorInt16* accel);   // get raw accelerometer data
+    void getRawGyroData(VectorInt16* gyro); // get raw gyro data
+
+
+    void getAccelVector(VectorFloat* v);    // acceleration vector
+    void getGyroData(VectorFloat* gyroRate, unsigned long int deltaT);    // get rate or rotation in gyro
+
+
+    
 
 private:
     uint8_t devAddr;

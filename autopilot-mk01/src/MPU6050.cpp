@@ -21,12 +21,12 @@ void MPU6050::initialize()
 
   Wire.beginTransmission(devAddr);    // start communicating with mpu6050
   Wire.write(MPU6050_RA_GYRO_CONFIG); // we want to write in 0x1B which is gyro configaration register
-  Wire.write(0x08);                   // set the gyro for 500 deg pre sec full scale
+  Wire.write(0b00001000);             // set the gyro for 500 deg pre sec full scale
   Wire.endTransmission();             // end the transmission
 
   Wire.beginTransmission(devAddr); // start communicating with mpu6050
-  Wire.write(0x1C);                // we want to write in 0x1C register which is Accelerometer Configuration register
-  Wire.write(0x10);                // set the accelerometer with +-8g
+  Wire.write(MPU6050_RA_ACCEL_CONFIG);                // we want to write in 0x1C register which is Accelerometer Configuration register
+  Wire.write(0b00010000);              // set the accelerometer with +-8g
   Wire.endTransmission();          // end the transmission
 
   Wire.beginTransmission(0x68);        // start communicating with mpu6050
