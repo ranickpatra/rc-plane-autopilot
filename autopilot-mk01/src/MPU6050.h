@@ -390,24 +390,26 @@ public:
     // MPU6050(uint8_t address = MPU6050_ADDRESS);
 
     void initialize();
-    void readRawData(); // read the raw data
+    void read(); // read the raw data
 
     void getRawAccelData(VectorInt16* accel);   // get raw accelerometer data
     void getRawGyroData(VectorInt16* gyro); // get raw gyro data
 
 
     void getAccelVector(VectorFloat* v);    // acceleration vector
-    void getGyroData(VectorFloat* gyroRate, unsigned long int deltaT);    // get rate or rotation in gyro
+    void getGyroData(float* gyroRate, float deltaT);    // get rate or rotation in gyro 
 
 
     
 
 private:
-    uint8_t devAddr;
+    uint8_t devAddr = MPU6050_ADDRESS;
     int16_t accel[3];
     int16_t gyro[3];
     int16_t temperature;
-    int16_t gyro_cal[3] = {0,0,0};
+    // int16_t gyro_cal[3] = {0, 0, 0};
+    float gyro_cal[3] = {-89.46, 82.79, -11.22};
+    // int16_t gyro_cal[3] = {-89, 82, -11};
     
 };
 
