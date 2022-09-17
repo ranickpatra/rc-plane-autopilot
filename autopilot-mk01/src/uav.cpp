@@ -16,10 +16,15 @@ void UAV::set_orientation(float *ypr)
 }
 
 // fly the uav
-void UAV::fly()
+void UAV::fly(uint16_t deltaT)
 {
+    // get imu orientation
+    this->get_IMU_orientation(deltaT);
+
+
     // calculate PID
     this->caculate_pid();
+    
 }
 
 // calculation PID
@@ -49,5 +54,12 @@ void UAV::caculate_pid()
     prev_error_ypr[0] = error_ypr[0];
     prev_error_ypr[1] = error_ypr[1];
     prev_error_ypr[2] = error_ypr[2];
-
 }
+
+
+/// get orientation from IMU
+void UAV::get_IMU_orientation(uint16_t deltaT) {
+    mpu.read(); // 620us
+    mpu.getGyroData(this->gyro, deltaT);
+}
+

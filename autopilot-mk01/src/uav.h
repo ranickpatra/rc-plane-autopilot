@@ -23,6 +23,8 @@ private:
     float desired_ypr[3], current_ypr[3];
     float error_ypr[3] = {0,0,0,}, prev_error_ypr[3] = {0,0,0,};
 
+    float gyro[3] = {0,0,0}, accel[3];
+
     const float pid_ypr_KP[3] = {0,0,0}, pid_ypr_KI[3] = {0,0,0}, pid_ypr_KD[3] = {0,0,0};
     float pid_ypr_P[3], pid_ypr_I[3], pid_ypr_D[3], pid_ypr[3];
 
@@ -32,6 +34,7 @@ private:
      */
 
     void caculate_pid(); // PID for UAV
+    void get_IMU_orientation(); // get orientation from IMU
 
 };
 
