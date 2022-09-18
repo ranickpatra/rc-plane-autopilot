@@ -10,9 +10,9 @@
 | D12     | PB4     | Fin 4         |
 | D10     | PB2     | Propeller     |
 
-## Arduino nano
+## Arduino Nano
 
-![Arduino nano](images/Arduino-nano-pinout.png)
+![Arduino Nano](images/Arduino-nano-pinout.png)
 
 
 # Sensors
