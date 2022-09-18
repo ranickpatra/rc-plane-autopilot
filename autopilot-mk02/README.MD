@@ -3,12 +3,12 @@
 ## connections
 
 | PIN     | PORT    | USED          |
-| :---:   | :---:   | :---:         |
-| D10     |         | Propeller     |
-| D12     |         | Fin 1         |
-| D11     |         | Fin 2         |
-| D9      |         | Fin 3         |
-| D8      |         | Fin 4         |
+| :---    | :---    | :---          |
+| D8      | PB0     | Fin 1         |
+| D9      | PB1     | Fin 2         |
+| D11     | PB3     | Fin 3         |
+| D12     | PB4     | Fin 4         |
+| D10     | PB2     | Propeller     |
 
 ## Arduino nano
 
