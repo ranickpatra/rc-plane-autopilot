@@ -1,25 +1,28 @@
 #include "./drone.h"
 
-Drone::Drone(Propeller *propeller,
-             Fin *fin1, Fin *fin2, Fin *fin3, Fin *fin4)
+Drone::Drone()
 {
-    this->propeller = propeller;
-    this->fin1 = fin1;
-    this->fin2 = fin2;
-    this->fin3 = fin3;
-    this->fin4 = fin4;
+//     this->propeller = Propeller(0, 1000);
+//     this->fin1 = new Fin(-9000, 9000);
+//     this->fin2 = new Fin(-9000, 9000);
+//     this->fin3 = new Fin(-9000, 9000);
+//     this->fin4 = new Fin(-9000, 9000);
 }
 
-void Drone::setPIDConstants(double kp, double ki, double kd)
+// void Drone::setPIDConstants(double kp, double ki, double kd)
+// {
+// }
+
+void Drone::setReceiverChannel(uint16_t *receiverChannel)
 {
-    this->kp = kp;
-    this->ki = ki;
-    this->kd = kd;
+    this->receiverChannel = receiverChannel;
 }
 
 void Drone::update()
 {
-    this->calculatePID();   // pid calculation
+    // this->calculatePID();   // pid calculation
+    this->propeller.speed = this->receiverChannel[2] - 1000;
+    this->propeller.update();
 }
 
 // calculate the pid for drone
@@ -31,9 +34,9 @@ void Drone::calculatePID()
     this->errorYPR[2] = this->targetAngle[2] - this->currentAngle[2];
 
     // delta error
-    this->deltaErrorYPR[0] = this->previousErrorYPR[0] this->errorYPR[0];
-    this->deltaErrorYPR[1] = this->previousErrorYPR[1] this->errorYPR[1];
-    this->deltaErrorYPR[2] = this->previousErrorYPR[2] this->errorYPR[2];
+    this->deltaErrorYPR[0] = this->previousErrorYPR[0] - this->errorYPR[0];
+    this->deltaErrorYPR[1] = this->previousErrorYPR[1] - this->errorYPR[1];
+    this->deltaErrorYPR[2] = this->previousErrorYPR[2] - this->errorYPR[2];
 
     // pid Proportion
     this->pidProportionYPR[0] = this->errorYPR[0] * this->pidKYaw.kp;
@@ -60,7 +63,14 @@ void Drone::calculatePID()
     this->pidDerevativeYPR[2] = this->deltaErrorYPR[2] * this->pidKPitchRoll.kd;
 
     // set error to previous error
-    this->previousError[0] = this->errorYPR[0];
-    this->previousError[1] = this->errorYPR[1];
-    this->previousError[2] = this->errorYPR[2];
+    this->previousErrorYPR[0] = this->errorYPR[0];
+    this->previousErrorYPR[1] = this->errorYPR[1];
+    this->previousErrorYPR[2] = this->errorYPR[2];
 }
+
+
+
+
+
+
+

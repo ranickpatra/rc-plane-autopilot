@@ -1,8 +1,7 @@
 #include "./fin.h"
 
-Fin::Fin(uint8_t pin, int16_t minAngle, int16_t maxAngle)
+Fin::Fin(double minAngle, double maxAngle)
 {
-    this->pin = pin;
     this->minAngle = minAngle;
     this->maxAngle = maxAngle;
 }

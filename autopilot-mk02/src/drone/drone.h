@@ -1,3 +1,4 @@
+#include "../helper/constants.h"
 #include <Arduino.h>
 #include "./fin.h"
 #include "./propeller.h"
@@ -10,17 +11,24 @@ class Drone
 {
 
 public:
-    Propeller *propeller;
-    Fin *fin1, *fin2, *fin3, *fin4;
-    Drone(Propeller *, Fin *, Fin *, Fin *, Fin *);
-    void setPIDConstants(double, double, double);
+    Propeller propeller = Propeller(0, 1000);
+    Fin fin1 = Fin(-90.0, 90.0), 
+        fin2 = Fin(-90.0, 90.0), 
+        fin3 = Fin(-90.0, 90.0), 
+        fin4 = Fin(-90.0, 90.0);
+    unsigned long ltime = LOOP_TIME;
+    Drone();
+    // void setPIDConstants(double, double, double);
     void update();
+    void setReceiverChannel(uint16_t *);
 
 private:
+    uint16_t *receiverChannel;
     PidConstant pidKYaw = PidConstant(0.0,0.0,0.0);
     PidConstant pidKPitchRoll = PidConstant(0.0,0.0,0.0);
 
-    double targetYPR[3] = {0.0, 0.0, 0.0};  // target angle
+    double targetAngle[3] = {0.0, 0.0, 0.0};  // target angle
+    double currentAngle[3] = {0.0, 0.0, 0.0};  // target angle
     double pidProportionYPR[3] = {0.0,0.0,0.0};
     double pidIntegralYPR[3] = {0.0,0.0,0.0};
     double pidDerevativeYPR[3] = {0.0,0.0,0.0};

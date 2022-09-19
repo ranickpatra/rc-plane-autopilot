@@ -2,19 +2,42 @@
 #include "./drone/drone.h"
 #include "./drone/propeller.h"
 #include "./drone/fin.h"
+#include "./receiver/receiver.h"
 
-Propeller propeller = Propeller(5, 0, 1000);
-Fin fin1 = Fin(5, -9000, 9000);
-Fin fin2 = Fin(5, -9000, 9000);
-Fin fin3 = Fin(5, -9000, 9000);
-Fin fin4 = Fin(5, -9000, 9000);
-Drone drone = Drone(&propeller, &fin1, &fin2, &fin3, &fin4);
+
+unsigned long loopTimer;  // loop timer
+
+// Drone drone = Drone();
+Receiver receiver;// = Receiver();
 
 void setup() {
-  // put your setup code here, to run once:
+  receiver.init();
+  // drone.setReceiverChannel(receiver.channel); // set receiver channel for drone
+  // setup for putputs
+  DDRB  |= B00011111;
+  PORTB &= B11100000;
+
+  PORTB |= B00011111;
+  delayMicroseconds(1000);
+  PORTB &= B11100000;
+
+  loopTimer = micros(); // get current time in μs
 }
 
 void loop() {
   
-  drone.update(); // update drone details
+  receiver.update();  // get data from receiver
+  // drone.update(); // update drone details
+  
+  while(micros() - loopTimer < LOOP_TIME ); // wait until loop time passed
+  loopTimer = micros(); // get current time in μs
+
+  PORTB |= B00011011;
+  // unsigned long thrustTime = receiver.channel[2] + loopTimer;
+  unsigned long thrustTime = 1500 + loopTimer;
+
+  while(thrustTime > micros());
+  
+  PORTB &= B11100100;
+  
 }

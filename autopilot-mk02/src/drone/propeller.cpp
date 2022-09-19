@@ -1,8 +1,7 @@
 #include "./propeller.h"
 
-Propeller::Propeller(uint8_t pin, int16_t minSpeed, int16_t maxSpeed)
+Propeller::Propeller(int16_t minSpeed, int16_t maxSpeed)
 {
-    this->pin = pin;
     this->minSpeed = minSpeed;
     this->maxSpeed = maxSpeed;
 }

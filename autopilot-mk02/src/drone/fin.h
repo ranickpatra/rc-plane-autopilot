@@ -5,11 +5,10 @@
 
 class Fin {
     public:
-        uint8_t pin;
-        int16_t angle;
-        int16_t minAngle, maxAngle;
+        double angle;
+        double minAngle, maxAngle;
 
-        Fin(uint8_t, int16_t, int16_t);
+        Fin(double, double);
         void update();
 };
 
