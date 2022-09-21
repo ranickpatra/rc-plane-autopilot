@@ -11,11 +11,11 @@ class Drone
 {
 
 public:
-    Propeller propeller = Propeller(0, 1000);
-    Fin fin1 = Fin(-90.0, 90.0), 
-        fin2 = Fin(-90.0, 90.0), 
-        fin3 = Fin(-90.0, 90.0), 
-        fin4 = Fin(-90.0, 90.0);
+    Propeller propeller;
+    Fin fin1 = Fin(-45.0, 45.0, 1570), 
+        fin2 = Fin(-45.0, 45.0, 1420), 
+        fin3 = Fin(-45.0, 45.0, 1380), 
+        fin4 = Fin(-45.0, 45.0, 1540);
     unsigned long ltime = LOOP_TIME;
     Drone();
     // void setPIDConstants(double, double, double);

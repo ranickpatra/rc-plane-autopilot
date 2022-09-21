@@ -7,9 +7,13 @@ class Fin {
     public:
         double angle;
         double minAngle, maxAngle;
-
-        Fin(double, double);
+        
+        Fin(double, double, uint16_t);
         void update();
+        uint16_t getPWM();
+    
+    private:
+        uint16_t center;
 };
 
 #endif

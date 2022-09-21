@@ -5,11 +5,9 @@
 class Propeller {
 
     public:
-        int16_t speed;
-        int16_t minSpeed, maxSpeed;
-
-        Propeller(int16_t, int16_t);
+        double speed;
         void update();
+        uint16_t getPWM();
 };
 
 #endif

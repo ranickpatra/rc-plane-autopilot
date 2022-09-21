@@ -5,17 +5,23 @@
 #define RECEIVER_CHANNEL_COUNT 6
 #endif
 
+// to get data from serial monitor 
+// #define SERIAL_MONITOR
+
 #ifndef _RECEIVER_
 #define _RECEIVER_
 
 class Receiver {
     public:
-        int channel[RECEIVER_CHANNEL_COUNT];    // modified data from receiver 1000 -> 2000
+        uint16_t channel[RECEIVER_CHANNEL_COUNT];    // modified data from receiver 1000 -> 2000
         void init();
         void update();
 
     private:
-        IBusBM IBus;
+        #ifndef SERIAL_MONITOR
+            IBusBM IBus;
+        #endif
+
 };
 #endif
 
