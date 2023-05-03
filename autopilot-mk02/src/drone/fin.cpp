@@ -1,21 +1,21 @@
 #include "./fin.h"
 
-Fin::Fin(double minAngle, double maxAngle, uint16_t center)
+Fin::Fin(int8_t min_angle, int8_t max_angle, uint16_t center)
 {
-    this->minAngle = minAngle;
-    this->maxAngle = maxAngle;
+    this->min_angle = min_angle;
+    this->max_angle = max_angle;
     this->center = center;
 }
 
 void Fin::update()
 {
-    if (this->angle > this->maxAngle)
-        this->angle = this->maxAngle;
-    else if (this->angle < this->minAngle)
-        this->angle = this->minAngle;
+    if (this->angle > this->max_angle)
+        this->angle = this->max_angle;
+    else if (this->angle < this->min_angle)
+        this->angle = this->min_angle;
 }
 
-uint16_t Fin::getPWM()
+uint16_t Fin::get_microseconds()
 {
     /**
      *          1000

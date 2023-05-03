@@ -2,7 +2,7 @@
 #include <IBusBM.h>
 
 #ifndef RECEIVER_CHANNEL_COUNT
-#define RECEIVER_CHANNEL_COUNT 6
+#define RECEIVER_CHANNEL_COUNT 4
 #endif
 
 // to get data from serial monitor 

@@ -5,6 +5,6 @@ void Propeller::update() {
     else if(this->speed < 0.0) this->speed = 0.0;
 }
 
-uint16_t Propeller::getPWM() {
+uint16_t Propeller::get_microseconds() {
     return (uint16_t)(this->speed * 10) + 1000;
 }

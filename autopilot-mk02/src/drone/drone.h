@@ -12,32 +12,32 @@ class Drone
 
 public:
     Propeller propeller;
-    Fin fin1 = Fin(-45.0, 45.0, 1570), 
-        fin2 = Fin(-45.0, 45.0, 1420), 
-        fin3 = Fin(-45.0, 45.0, 1380), 
-        fin4 = Fin(-45.0, 45.0, 1540);
+    Fin fin1 = Fin(-45, 45, 1570); 
+    Fin fin2 = Fin(-45, 45, 1420); 
+    Fin fin3 = Fin(-45, 45, 1380); 
+    Fin fin4 = Fin(-45, 45, 1540);
     unsigned long ltime = LOOP_TIME;
     Drone();
     // void setPIDConstants(double, double, double);
     void update();
-    void setReceiverChannel(uint16_t *);
+    void set_receiver_channel(uint16_t *);
 
 private:
-    uint16_t *receiverChannel;
-    PidConstant pidKYaw = PidConstant(0.0,0.0,0.0);
-    PidConstant pidKPitchRoll = PidConstant(0.0,0.0,0.0);
+    uint16_t *receiver_channel;
+    PidConstant pid_k_yaw = PidConstant(0.0,0.0,0.0);
+    PidConstant pid_k_pitch_roll = PidConstant(0.0,0.0,0.0);
 
-    double targetAngle[3] = {0.0, 0.0, 0.0};  // target angle
-    double currentAngle[3] = {0.0, 0.0, 0.0};  // target angle
-    double pidProportionYPR[3] = {0.0,0.0,0.0};
-    double pidIntegralYPR[3] = {0.0,0.0,0.0};
-    double pidDerevativeYPR[3] = {0.0,0.0,0.0};
+    double target_angle[3] = {0.0, 0.0, 0.0};  // target angle
+    double current_angle[3] = {0.0, 0.0, 0.0};  // target angle
+    double pid_proportion_ypr[3] = {0.0,0.0,0.0};
+    double pid_integral_ypr[3] = {0.0,0.0,0.0};
+    double pid_derevative_ypr[3] = {0.0,0.0,0.0};
 
-    double errorYPR[3] = {0.0, 0.0, 0.0};
-    double previousErrorYPR[3] = {0.0, 0.0, 0.0};
-    double deltaErrorYPR[3] = {0.0, 0.0, 0.0};
+    double error_ypr[3] = {0.0, 0.0, 0.0};
+    double previous_error_ypr[3] = {0.0, 0.0, 0.0};
+    double delta_error_ypr[3] = {0.0, 0.0, 0.0};
 
-    void calculatePID(); // calculate pid for drone
+    void calculate_pid(); // calculate pid for drone
 };
 
 #endif

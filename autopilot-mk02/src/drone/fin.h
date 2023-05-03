@@ -5,12 +5,12 @@
 
 class Fin {
     public:
-        double angle;
-        double minAngle, maxAngle;
+        int8_t angle;
+        int8_t min_angle, max_angle;
         
-        Fin(double, double, uint16_t);
+        Fin(int8_t, int8_t, uint16_t);
         void update();
-        uint16_t getPWM();
+        uint16_t get_microseconds();
     
     private:
         uint16_t center;

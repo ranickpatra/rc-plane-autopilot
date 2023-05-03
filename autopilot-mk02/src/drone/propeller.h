@@ -7,7 +7,7 @@ class Propeller {
     public:
         double speed;
         void update();
-        uint16_t getPWM();
+        uint16_t get_microseconds();
 };
 
 #endif

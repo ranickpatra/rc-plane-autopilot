@@ -10,6 +10,15 @@
 | D12     | PB4     | Fin 4         |
 | D10     | PB2     | Propeller     |
 
+## Receiver Connection
+
+| PIN       | PORT  | PCINT     | USED |
+| :---      | :---  | :---      | :--- |
+| D4        | PD4   | PCINT20   | CH1  |
+| D5        | PD5   | PCINT21   | CH2  |
+| D6        | PD6   | PCINT22   | CH3  |
+| D7        | PD7   | PCINT23   | CH4  |
+
 ## Arduino Nano
 
 ![Arduino Nano](images/Arduino-nano-pinout.png)

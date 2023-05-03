@@ -2,35 +2,25 @@
 
 Drone::Drone()
 {
-//     this->propeller = Propeller(0, 1000);
-//     this->fin1 = new Fin(-9000, 9000);
-//     this->fin2 = new Fin(-9000, 9000);
-//     this->fin3 = new Fin(-9000, 9000);
-//     this->fin4 = new Fin(-9000, 9000);
 }
 
-// void Drone::setPIDConstants(double kp, double ki, double kd)
-// {
-// }
-
-void Drone::setReceiverChannel(uint16_t *receiverChannel)
+void Drone::set_receiver_channel(uint16_t *receiver_channel)
 {
-    this->receiverChannel = receiverChannel;
+    this->receiver_channel = receiver_channel;
 }
 
 void Drone::update()
 {
     // this->calculatePID();   // pid calculation
 
-    this->propeller.speed = ((double)this->receiverChannel[2] - 1000) / 10; // from 1000 to 100
+    this->propeller.speed = ((double)this->receiver_channel[2] - 1000) / 10; // from 1000 to 100
 
     // 1us is 0.18 deg and convert it into -90 to +90
-    this->fin1.angle = ((double) this->receiverChannel[0] - 1500) * 0.18;
-    this->fin2.angle = ((double) this->receiverChannel[1] - 1500) * 0.18;
-    this->fin3.angle = ((double) this->receiverChannel[3] - 1500) * 0.18;
-    this->fin4.angle = ((double) this->receiverChannel[4] - 1500) * 0.18;
+    this->fin1.angle = (uint8_t) ((this->receiver_channel[0] - 1500) * 0.18);
+    this->fin2.angle = (uint8_t) ((this->receiver_channel[0] - 1500) * 0.18);
+    this->fin3.angle = (uint8_t) ((this->receiver_channel[1] - 1500) * 0.18);
+    this->fin4.angle = (uint8_t) ((this->receiver_channel[1] - 1500) * 0.18);
 
-    
     this->propeller.update();
     this->fin1.update();
     this->fin2.update();
@@ -39,51 +29,44 @@ void Drone::update()
 }
 
 // calculate the pid for drone
-void Drone::calculatePID()
+void Drone::calculate_pid()
 {
     // calculate errors
-    this->errorYPR[0] = this->targetAngle[0] - this->currentAngle[0];
-    this->errorYPR[1] = this->targetAngle[1] - this->currentAngle[1];
-    this->errorYPR[2] = this->targetAngle[2] - this->currentAngle[2];
+    this->error_ypr[0] = this->target_angle[0] - this->current_angle[0];
+    this->error_ypr[1] = this->target_angle[1] - this->current_angle[1];
+    this->error_ypr[2] = this->target_angle[2] - this->current_angle[2];
 
     // delta error
-    this->deltaErrorYPR[0] = this->previousErrorYPR[0] - this->errorYPR[0];
-    this->deltaErrorYPR[1] = this->previousErrorYPR[1] - this->errorYPR[1];
-    this->deltaErrorYPR[2] = this->previousErrorYPR[2] - this->errorYPR[2];
+    this->delta_error_ypr[0] = this->previous_error_ypr[0] - this->error_ypr[0];
+    this->delta_error_ypr[1] = this->previous_error_ypr[1] - this->error_ypr[1];
+    this->delta_error_ypr[2] = this->previous_error_ypr[2] - this->error_ypr[2];
 
     // pid Proportion
-    this->pidProportionYPR[0] = this->errorYPR[0] * this->pidKYaw.kp;
-    this->pidProportionYPR[1] = this->errorYPR[1] * this->pidKPitchRoll.kp;
-    this->pidProportionYPR[2] = this->errorYPR[2] * this->pidKPitchRoll.kp;
+    this->pid_proportion_ypr[0] = this->error_ypr[0] * this->pid_k_yaw.kp;
+    this->pid_proportion_ypr[1] = this->error_ypr[1] * this->pid_k_pitch_roll.kp;
+    this->pid_proportion_ypr[2] = this->error_ypr[2] * this->pid_k_pitch_roll.kp;
 
     // pid Integral
-    if((this->errorYPR[0] * (this->errorYPR[0] < 0 ? -1 : 1)) < 0.1 )
-        this->pidIntegralYPR[0] += this->errorYPR[0] * this->pidKYaw.ki;
+    if ((this->error_ypr[0] * (this->error_ypr[0] < 0 ? -1 : 1)) < 0.1)
+        this->pid_integral_ypr[0] += this->error_ypr[0] * this->pid_k_yaw.ki;
     else
-        this->pidIntegralYPR[0] = 0;
-    if((this->errorYPR[1] * (this->errorYPR[1] < 0 ? -1 : 1)) < 0.1 )
-        this->pidIntegralYPR[1] += this->errorYPR[1] * this->pidKPitchRoll.ki;
+        this->pid_integral_ypr[0] = 0;
+    if ((this->error_ypr[1] * (this->error_ypr[1] < 0 ? -1 : 1)) < 0.1)
+        this->pid_integral_ypr[1] += this->error_ypr[1] * this->pid_k_pitch_roll.ki;
     else
-        this->pidIntegralYPR[1] = 0;
-    if((this->errorYPR[2] * (this->errorYPR[2] < 0 ? -1 : 1)) < 0.1 )
-        this->pidIntegralYPR[2] += this->errorYPR[2] * this->pidKPitchRoll.ki;
+        this->pid_integral_ypr[1] = 0;
+    if ((this->error_ypr[2] * (this->error_ypr[2] < 0 ? -1 : 1)) < 0.1)
+        this->pid_integral_ypr[2] += this->error_ypr[2] * this->pid_k_pitch_roll.ki;
     else
-        this->pidIntegralYPR[2] = 0;
+        this->pid_integral_ypr[2] = 0;
 
     // pid derevative
-    this->pidDerevativeYPR[0] = this->deltaErrorYPR[0] * this->pidKYaw.kd;
-    this->pidDerevativeYPR[1] = this->deltaErrorYPR[1] * this->pidKPitchRoll.kd;
-    this->pidDerevativeYPR[2] = this->deltaErrorYPR[2] * this->pidKPitchRoll.kd;
+    this->pid_derevative_ypr[0] = this->delta_error_ypr[0] * this->pid_k_yaw.kd;
+    this->pid_derevative_ypr[1] = this->delta_error_ypr[1] * this->pid_k_pitch_roll.kd;
+    this->pid_derevative_ypr[2] = this->delta_error_ypr[2] * this->pid_k_pitch_roll.kd;
 
     // set error to previous error
-    this->previousErrorYPR[0] = this->errorYPR[0];
-    this->previousErrorYPR[1] = this->errorYPR[1];
-    this->previousErrorYPR[2] = this->errorYPR[2];
+    this->previous_error_ypr[0] = this->error_ypr[0];
+    this->previous_error_ypr[1] = this->error_ypr[1];
+    this->previous_error_ypr[2] = this->error_ypr[2];
 }
-
-
-
-
-
-
-
