@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include <IBusBM.h>
+// #include <IBusBM.h>
 
 #ifndef RECEIVER_CHANNEL_COUNT
 #define RECEIVER_CHANNEL_COUNT 4
@@ -19,7 +19,7 @@ class Receiver {
 
     private:
         #ifndef SERIAL_MONITOR
-            IBusBM IBus;
+            // IBusBM IBus;
         #endif
 
 };
