@@ -22,3 +22,11 @@
 // #ifndef FIN_CHECK
 // #define FIN_CHECK // to check the fins
 // #endif
+
+
+/**
+ * @brief enable serial monitor
+ */
+#ifndef SERIAL_MONITOR
+#define SERIAL_MONITOR
+#endif
