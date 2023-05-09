@@ -16,10 +16,10 @@ void Drone::update()
     this->propeller.speed = ((double)this->receiver_channel[2] - 1000) / 10; // from 1000 to 100
 
     // 1us is 0.18 deg and convert it into -90 to +90
-    this->fin1.angle = (int8_t) ((this->receiver_channel[0] - 1500) * 0.18);
-    this->fin2.angle = (int8_t) ((this->receiver_channel[0] - 1500) * 0.18);
-    this->fin3.angle = (int8_t) ((this->receiver_channel[1] - 1500) * 0.18);
-    this->fin4.angle = (int8_t) ((this->receiver_channel[1] - 1500) * 0.18);
+    this->fin1.angle = ((int)this->receiver_channel[0] - 1500) * 0.18;
+    this->fin2.angle = ((int)this->receiver_channel[0] - 1500) * 0.18;
+    this->fin3.angle = ((int)this->receiver_channel[1] - 1500) * 0.18;
+    this->fin4.angle = ((int)this->receiver_channel[1] - 1500) * 0.18;
 
     this->propeller.update();
     this->fin1.update();

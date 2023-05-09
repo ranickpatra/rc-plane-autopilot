@@ -27,6 +27,7 @@
 /**
  * @brief enable serial monitor
  */
-#ifndef SERIAL_MONITOR
-#define SERIAL_MONITOR
-#endif
+// #ifndef SERIAL_MONITOR
+// #define SERIAL_MONITOR
+// #endif
+

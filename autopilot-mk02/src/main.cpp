@@ -68,36 +68,36 @@ void loop()
     {
     case 0:
       if (drone.fin1.angle == 0)
-        drone.fin1.angle = 45;
+        drone.fin1.angle = 45.0;
       else if (drone.fin1.angle > 0)
-        drone.fin1.angle = -45;
+        drone.fin1.angle = -45.0;
       else if (drone.fin1.angle < 0)
         drone.fin1.angle = 0;
       break;
 
     case 1:
       if (drone.fin2.angle == 0)
-        drone.fin2.angle = 45;
+        drone.fin2.angle = 45.0;
       else if (drone.fin2.angle > 0)
-        drone.fin2.angle = -45;
+        drone.fin2.angle = -45.0;
       else if (drone.fin2.angle < 0)
         drone.fin2.angle = 0;
       break;
 
     case 2:
       if (drone.fin3.angle == 0)
-        drone.fin3.angle = 45;
+        drone.fin3.angle = 45.0;
       else if (drone.fin3.angle > 0)
-        drone.fin3.angle = -45;
+        drone.fin3.angle = -45.0;
       else if (drone.fin3.angle < 0)
         drone.fin3.angle = 0;
       break;
 
     case 3:
       if (drone.fin4.angle == 0)
-        drone.fin4.angle = 45;
+        drone.fin4.angle = 45.0;
       else if (drone.fin4.angle > 0)
-        drone.fin4.angle = -45;
+        drone.fin4.angle = -45.0;
       else if (drone.fin4.angle < 0)
         drone.fin4.angle = 0;
       break;
@@ -106,6 +106,11 @@ void loop()
     if (!drone.fin1.angle && !drone.fin2.angle && !drone.fin3.angle && !drone.fin4.angle)
       fin_index++;
   }
+
+  drone.fin1.update();
+  drone.fin2.update();
+  drone.fin3.update();
+  drone.fin4.update();
 
 #else
   receiver.update(); // get data from receiver
@@ -118,10 +123,10 @@ void loop()
 
   PORTB |= B00011111;
   propeller_time = drone.propeller.get_microseconds() + loop_timer;
-  fin_time[0] = drone.fin1.get_microseconds() + loop_timer;
-  fin_time[1] = drone.fin2.get_microseconds() + loop_timer;
-  fin_time[2] = drone.fin3.get_microseconds() + loop_timer;
-  fin_time[3] = drone.fin4.get_microseconds() + loop_timer;
+  fin_time[0] = ((unsigned long) drone.fin1.get_microseconds()) + loop_timer;
+  fin_time[1] = ((unsigned long) drone.fin2.get_microseconds()) + loop_timer;
+  fin_time[2] = ((unsigned long) drone.fin3.get_microseconds()) + loop_timer;
+  fin_time[3] = ((unsigned long) drone.fin4.get_microseconds()) + loop_timer;
 
   while (PORTB & B00011111)
   {
@@ -147,8 +152,15 @@ void loop()
   Serial.print(fin_time[0] - loop_timer); Serial.print(",");
   Serial.print(fin_time[1] - loop_timer); Serial.print(",");
   Serial.print(fin_time[2] - loop_timer); Serial.print(",");
-  Serial.print(fin_time[2] - loop_timer); Serial.print(",");
-  Serial.print(propeller_time - loop_timer); Serial.println("");
+  Serial.print(fin_time[3] - loop_timer); Serial.print("~");
+  // Serial.print(propeller_time - loop_timer); 
+
+  Serial.print(drone.fin1.get_microseconds()); Serial.print(",");
+  Serial.print(drone.fin2.get_microseconds()); Serial.print(",");
+  Serial.print(drone.fin3.get_microseconds()); Serial.print(",");
+  Serial.print(drone.fin4.get_microseconds()); Serial.print("");
+  
+  Serial.println("");
 #endif
 }
 
@@ -156,76 +168,20 @@ ISR(PCINT2_vect)
 {
   receiver_interrupt_time = micros(); // get current time
 
-  // channe 1 =========================================================
-  if (PIND & B00010000)    // is pin 4 high?
+  for (uint8_t i = 0; i < RECEIVER_CHANNEL_COUNT; i++)
   {
-    if (receiver_channels_interrupt_time[0] == 0) // is pin 4 already high?
+    // channe[i]  =========================================================
+    if (PIND & (1 << (PIND4 + i))) // is pin i high?
     {
-      receiver_channels_interrupt_time[0] = receiver_interrupt_time;  // set current time
+      if (receiver_channels_interrupt_time[i] == 0) // is pin i already high?
+      {
+        receiver_channels_interrupt_time[i] = receiver_interrupt_time; // set current time
+      }
+    }
+    else if (receiver_channels_interrupt_time[i] != 0) // is pin i not high and already changed high to low
+    {
+      receiver.channel[i] = (uint16_t)(receiver_interrupt_time - receiver_channels_interrupt_time[i]); // get the time difference
+      receiver_channels_interrupt_time[i] = 0;                                                         // set timer to 0 to remember data already read
     }
   }
-  else if (receiver_channels_interrupt_time[0] != 0)  // is pin 4 not high and already changed high to low
-  {
-    receiver.channel[0] = (uint16_t)(receiver_interrupt_time - receiver_channels_interrupt_time[0]); // get the time difference
-    receiver_channels_interrupt_time[0] = 0;  // set timer to 0 to remember data already read
-  }
-
-  // channe 2 =========================================================
-  if (PIND & B00100000)    // is pin 5 high?
-  {
-    if (receiver_channels_interrupt_time[1] == 0) // is pin 5 already high?
-    {
-      receiver_channels_interrupt_time[1] = receiver_interrupt_time;  // set current time
-    }
-  }
-  else if (receiver_channels_interrupt_time[1] != 0)  // is pin 5 not high and already changed high to low
-  {
-    receiver.channel[1] = (uint16_t)(receiver_interrupt_time - receiver_channels_interrupt_time[1]); // get the time difference
-    receiver_channels_interrupt_time[1] = 0;  // set timer to 0 to remember data already read
-  }
-
-  // channe 3 =========================================================
-  if (PIND & B01000000)    // is pin 6 high?
-  {
-    if (receiver_channels_interrupt_time[2] == 0) // is pin 6 already high?
-    {
-      receiver_channels_interrupt_time[2] = receiver_interrupt_time;  // set current time
-    }
-  }
-  else if (receiver_channels_interrupt_time[2] != 0)  // is pin 6 not high and already changed high to low
-  {
-    receiver.channel[2] = (uint16_t)(receiver_interrupt_time - receiver_channels_interrupt_time[2]); // get the time difference
-    receiver_channels_interrupt_time[2] = 0;  // set timer to 0 to remember data already read
-  }
-
-  // channe 4 =========================================================
-  if (PIND & B10000000)    // is pin 7 high?
-  {
-    if (receiver_channels_interrupt_time[3] == 0) // is pin 7 already high?
-    {
-      receiver_channels_interrupt_time[3] = receiver_interrupt_time;  // set current time
-    }
-  }
-  else if (receiver_channels_interrupt_time[3] != 0)  // is pin 7 not high and already changed high to low
-  {
-    receiver.channel[3] = (uint16_t)(receiver_interrupt_time - receiver_channels_interrupt_time[3]); // get the time difference
-    receiver_channels_interrupt_time[3] = 0;  // set timer to 0 to remember data already read
-  }
-
-  // for (uint8_t i = 0; i < RECEIVER_CHANNEL_COUNT; i++)
-  // {
-  //   // channe[i]  =========================================================
-  //   if (PIND & (1 << (PIND4 + i))) // is pin i high?
-  //   {
-  //     if (receiver_channels_interrupt_time[i] == 0) // is pin i already high?
-  //     {
-  //       receiver_channels_interrupt_time[i] = receiver_interrupt_time; // set current time
-  //     }
-  //   }
-  //   else if (receiver_channels_interrupt_time[i] != 0) // is pin i not high and already changed high to low
-  //   {
-  //     receiver.channel[i] = (uint16_t)(receiver_interrupt_time - receiver_channels_interrupt_time[i]); // get the time difference
-  //     receiver_channels_interrupt_time[i] = 0;                                                         // set timer to 0 to remember data already read
-  //   }
-  // }
 }
