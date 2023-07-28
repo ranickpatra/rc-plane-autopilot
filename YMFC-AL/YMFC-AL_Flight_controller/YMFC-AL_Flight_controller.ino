@@ -555,5 +555,3 @@ void set_gyro_registers(){
 
   }  
 }
-
-q

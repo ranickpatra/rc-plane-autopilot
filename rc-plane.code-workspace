@@ -1,7 +1,14 @@
 {
 	"folders": [
 		{
+			"path": "aviation"
+		},
+		{
 			"path": "MPU6050-Adafruit"
+		},
+		{
+			"name": "MPU6050-test",
+			"path": "MPU6050-test"
 		},
 		{
 			"path": "YMFC-AL"
@@ -14,5 +21,6 @@
 			"name": "autopilot-mk02",
 			"path": "autopilot-mk02"
 		}
+		
 	]
 }
