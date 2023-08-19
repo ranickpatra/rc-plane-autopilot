@@ -49,13 +49,13 @@ void loop()
     count++;
   }
 
-  Serial.print(gyro[0]); Serial.print(", ");
-  Serial.print(gyro[1]); Serial.print(", ");
-  Serial.print(gyro[2]); Serial.print(", ");
+  Serial.print(gyro[0]); Serial.print(",");
+  Serial.print(gyro[1]); Serial.print(",");
+  Serial.print(gyro[2]); Serial.print(",");
 
-  Serial.print(acc[0]); Serial.print(", ");
-  Serial.print(acc[1]); Serial.print(", ");
-  Serial.print(acc[2]); Serial.print(", ");
+  Serial.print(acc[0]); Serial.print(",");
+  Serial.print(acc[1]); Serial.print(",");
+  Serial.print(acc[2]); Serial.print(",");
 
   Serial.print(((double) temp) / 340 + 36.53); //Serial.print("°C");
   Serial.println("");
