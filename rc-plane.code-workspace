@@ -20,7 +20,10 @@
 		{
 			"name": "autopilot-mk02",
 			"path": "autopilot-mk02"
+		},
+		{
+			"name": "autopilot-mk03",
+			"path": "autopilot-mk03"
 		}
-		
 	]
 }
