@@ -1,4 +1,4 @@
-#ifndef FC_RECEIVER_H
-#define FC_RECEIVER_H
+#pragma once
 
-#endif
+
+

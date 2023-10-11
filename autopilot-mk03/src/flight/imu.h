@@ -1,10 +1,10 @@
+#pragma once
+
 #include <Arduino.h>
 #include <Wire.h>
 #include "io/indiactor.h"
 #include "config.h"
 
-#ifndef FC_IMU_H
-#define FC_IMU_H
 
 struct imu_raw_t
 {
@@ -39,5 +39,3 @@ void imu_calibrate();
 void imu_get_raw_data(imu_raw_t* data);
 
 
-
-#endif

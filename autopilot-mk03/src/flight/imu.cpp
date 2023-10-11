@@ -1,4 +1,5 @@
 #include "imu.h"
+#include "common/filter.h"
 
 imu_raw_t raw_data = {0, 0, 0, 0, 0, 0};
 imu_calibration_t calibration_data = {0, 0, 0, 0, 0, 0};
@@ -86,7 +87,7 @@ void imu_read_data()
 void imu_calibrate()
 {
   long tmp_imu_calibration_data[3] = {0, 0, 0};
-  unsigned long int loop_time = micros() + LOOP_TIME;
+  unsigned long int loop_time = micros() + LOOP_TIME_MICROSECONDS;
   // calibrate
   for (uint16_t i = 0; i < IMU_CALIBRATION_STEPS; i++)
   {
@@ -101,7 +102,7 @@ void imu_calibrate()
 
     // wait for loop time 
     while (loop_time > micros());
-    loop_time = micros() + LOOP_TIME;
+    loop_time = micros() + LOOP_TIME_MICROSECONDS;
   }
 
   indicator_off();  // turn off the indicator
@@ -110,6 +111,14 @@ void imu_calibrate()
   calibration_data.gx = (int)(tmp_imu_calibration_data[0] / IMU_CALIBRATION_STEPS);
   calibration_data.gy = (int)(tmp_imu_calibration_data[1] / IMU_CALIBRATION_STEPS);
   calibration_data.gz = (int)(tmp_imu_calibration_data[2] / IMU_CALIBRATION_STEPS);
+
+
+
+  // TODO remove
+  ExtendedKalmanFilter ekf = ExtendedKalmanFilter(3, 0.98);
+  float gyro[3];
+  float acc[3];
+  ekf.update(gyro, acc);
 }
 
 // imu get raw data
