@@ -10,7 +10,7 @@ UAV uav;
 
 unsigned long int currentTime, cc;
 float gyroData[3], gyroRate[3] = {0, 0, 0};
-float angle[3] = {0, 0, 0};
+float accl_angle[3] = {0, 0, 0};
 
 VectorFloat accelData;
 
@@ -40,8 +40,8 @@ void setup()
 
   mpu.getAccelVector(&accelData);
   accelData.normalize();
-  angle[0] = asin(accelData.x);
-  angle[1] = asin(accelData.y);
+  accl_angle[0] = asin(accelData.x);
+  accl_angle[1] = asin(accelData.y);
 }
 
 void loop()
@@ -62,26 +62,26 @@ void loop()
   accelData.normalize();  // 140us
 
   // 240us
-  angle[0] = (angle[0] + gyroRate[1]) * 0.95 + (asin(accelData.x)) * 0.05;
-  angle[1] = (angle[1] + gyroRate[0]) * 0.95 + (asin(accelData.y)) * 0.05;
-  angle[2] = (angle[2] + gyroRate[2]);
+  accl_angle[0] = (accl_angle[0] + gyroRate[1]) * 0.95 + (asin(accelData.x)) * 0.05;
+  accl_angle[1] = (accl_angle[1] + gyroRate[0]) * 0.95 + (asin(accelData.y)) * 0.05;
+  accl_angle[2] = (accl_angle[2] + gyroRate[2]);
 
   /* we convert rolto pitch and pitch to rol because MPU6050 may be yawed inclimbed
   */
   // 140us
-  angle[0] -= angle[1] * sin(gyroRate[2]);
-  angle[1] += angle[0] * sin(gyroRate[2]);
+  accl_angle[0] -= accl_angle[1] * sin(gyroRate[2]);
+  accl_angle[1] += accl_angle[0] * sin(gyroRate[2]);
 
 
 
   printCounter++;
   if (printCounter % 5 == 0)
   {
-    Serial.print(angle[0]*180/PI); Serial.print("\t");
-    Serial.print(angle[1]*180/PI); Serial.print("\t");
+    Serial.print(accl_angle[0]*180/PI); Serial.print("\t");
+    Serial.print(accl_angle[1]*180/PI); Serial.print("\t");
     // Serial.print(angle[2]); Serial.print("\t");
     // Serial.println(printCounter);
-    Serial.println(angle[2]*180/PI);
+    Serial.println(accl_angle[2]*180/PI);
     printCounter = 0;
   }
 }

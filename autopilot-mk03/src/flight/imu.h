@@ -1,41 +1,45 @@
 #pragma once
 
-#include <Arduino.h>
+// #include <Arduino.h>
 #include <Wire.h>
 #include "io/indiactor.h"
 #include "config.h"
 
-
 struct imu_raw_t
 {
-  int gx;
-  int gy;
-  int gz;
-  int ax;
-  int ay;
-  int az;
+  int16_t gx;
+  int16_t gy;
+  int16_t gz;
+  int16_t ax;
+  int16_t ay;
+  int16_t az;
+};
+
+struct imu_data_t
+{
+  float gx;
+  float gy;
+  float gz;
+  float ax;
+  float ay;
+  float az;
 };
 
 
 struct imu_calibration_t
 {
-  int gx;
-  int gy;
-  int gz;
-  int ax;
-  int ay;
-  int az;
+  int16_t gx;
+  int16_t gy;
+  int16_t gz;
+  int16_t ax;
+  int16_t ay;
+  int16_t az;
 };
 
 
 
-// initilize imu
 bool imu_init();
-// read imu
 void imu_read_data();
-// calibrate imu
 void imu_calibrate();
-// imu get raw data
-void imu_get_raw_data(imu_raw_t* data);
-
-
+void imu_get_raw_data(imu_raw_t *data);
+void imu_get_data(imu_data_t *data);

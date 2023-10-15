@@ -1,127 +1,76 @@
+#include <math.h>
 #include "imu.h"
 #include "common/filter.h"
+#include "sensors/MPU6050.h"
 
 imu_raw_t raw_data = {0, 0, 0, 0, 0, 0};
 imu_calibration_t calibration_data = {0, 0, 0, 0, 0, 0};
 
-// initilize imu
+// Function to initialize the IMU sensor
 boolean imu_init()
 {
-  // set up the MPU6050
-  Wire.beginTransmission(0x68); // start communicating with mpu6050
-  Wire.write(0x6B);             // we want to write in 0x6B register which is powermanagement register
-  Wire.write(0x00);             // write 0x00 to that register
-  Wire.endTransmission();       // end the transmission
-
-  Wire.beginTransmission(0x68); // start communicating with mpu6050
-  Wire.write(0x1B);             // we want to write in 0x1B which is gyro configaration register
-  Wire.write(0x08);             // set the gyro for 500 deg pre sec full scale
-  Wire.endTransmission();       // end the transmission
-
-  Wire.beginTransmission(0x68); // start communicating with mpu6050
-  Wire.write(0x1C);             // we want to write in 0x1C register which is Accelerometer Configuration register
-  Wire.write(0x10);             // set the accelerometer with +-8g
-  Wire.endTransmission();       // end the transmission
-
-  Wire.beginTransmission(0x68); // start communicating with mpu6050
-  Wire.write(0x1A);             // we want to write in 0x1A which is used to gyro and accelerometer synchronizing
-  Wire.write(0x03);             // write 0x03 in that register
-  Wire.endTransmission();       // end the transmission
-
-  // random check registers wheather the values is written correctly or not
-  Wire.beginTransmission(0x68);
-  Wire.write(0x1B);
-  Wire.endTransmission();
-  Wire.beginTransmission(0x68);
-  Wire.requestFrom(0x68, 1);
-  while (Wire.available() < 1)
-    ;
-  byte data = Wire.read();
-  Wire.endTransmission();
-  if (data != 0x08)
-    return false;
-  
-  // random check registers wheather the values is written correctly or not
-  Wire.beginTransmission(0x68);
-  Wire.write(0x1C);
-  Wire.endTransmission();
-  Wire.beginTransmission(0x68);
-  Wire.requestFrom(0x68, 1);
-  while (Wire.available() < 1)
-    ;
-  data = Wire.read();
-  Wire.endTransmission();
-  if (data != 0x10)
-    return false;
-
-  return true;
+  // Call the initialization function for the MPU6050
+  // Returns true if initialization was successful, false otherwise
+  return mpu6050_init();
 }
 
-// read raw data from imu
+// Function to read and calibrate raw data from the IMU sensor
 void imu_read_data()
 {
-  Wire.beginTransmission(0x68); // start communicating with MPU6050
-  Wire.write(0x3B);             // start reading from 0x3B
-  Wire.endTransmission();       // end the transmission
-  Wire.requestFrom(0x68, 14);   // request 14 bytes
-  while (Wire.available() < 14)
-    ;                                           // wait until 14 bytes are received
-  raw_data.ax = Wire.read() << 8 | Wire.read(); // read acc x data
-  raw_data.ay = Wire.read() << 8 | Wire.read(); // read acc y data
-  raw_data.az = Wire.read() << 8 | Wire.read(); // read acc z data
-  Wire.read(); Wire.read();               // read temperature data [we don't use it here]
-  raw_data.gx = Wire.read() << 8 | Wire.read(); // read gyro x data
-  raw_data.gy = Wire.read() << 8 | Wire.read(); // read gyro y data
-  raw_data.gz = Wire.read() << 8 | Wire.read(); // read gyro z data
+  // Read raw sensor data from the MPU6050
+  mpu6050_read_raw_data();
+  // Store the raw sensor data in the 'raw_data' structure
+  mpu6050_get_raw_data(&raw_data);
 
-  // calibration
-  raw_data.gx -= calibration_data.gx;
-  raw_data.gy -= calibration_data.gy;
-  raw_data.gz -= calibration_data.gz;
-  raw_data.ax -= calibration_data.ax;
-  raw_data.ay -= calibration_data.ay;
-  raw_data.az -= calibration_data.az;
+  // Calibrate the raw data by subtracting out the calibration values
+  // This is necessary to account for sensor drift or bias
+  raw_data.gx -= calibration_data.gx; // Calibrate gyroscope X-axis data
+  raw_data.gy -= calibration_data.gy; // Calibrate gyroscope Y-axis data
+  raw_data.gz -= calibration_data.gz; // Calibrate gyroscope Z-axis data
+  raw_data.ax -= calibration_data.ax; // Calibrate accelerometer X-axis data
+  raw_data.ay -= calibration_data.ay; // Calibrate accelerometer Y-axis data
+  raw_data.az -= calibration_data.az; // Calibrate accelerometer Z-axis data
 }
 
-// calibrate imu
+// Function to calibrate the IMU sensor
 void imu_calibrate()
 {
+  // Temporary storage for the accumulated sensor readings during calibration
   long tmp_imu_calibration_data[3] = {0, 0, 0};
+  // Record the next expected time to read sensor data based on loop time
   unsigned long int loop_time = micros() + LOOP_TIME_MICROSECONDS;
-  // calibrate
+
+  // Calibrate by reading the sensor multiple times
   for (uint16_t i = 0; i < IMU_CALIBRATION_STEPS; i++)
   {
+    // Read current sensor data
     imu_read_data();
+    // Accumulate the gyroscope readings
     tmp_imu_calibration_data[0] += (long)raw_data.gx;
     tmp_imu_calibration_data[1] += (long)raw_data.gy;
     tmp_imu_calibration_data[2] += (long)raw_data.gz;
 
-    // blink indicator 
+    // Blink an indicator LED every 50 readings to show that calibration is in progress
     if (i % 50 == 0)
       indicator_blink();
 
-    // wait for loop time 
-    while (loop_time > micros());
+    // Wait until it's time for the next reading
+    while (loop_time > micros())
+      ;
+    // Update the next expected time for a sensor read
     loop_time = micros() + LOOP_TIME_MICROSECONDS;
   }
 
-  indicator_off();  // turn off the indicator
+  // Turn off the indicator LED to show that calibration is complete
+  indicator_off();
 
-  // average the calibration data
-  calibration_data.gx = (int)(tmp_imu_calibration_data[0] / IMU_CALIBRATION_STEPS);
-  calibration_data.gy = (int)(tmp_imu_calibration_data[1] / IMU_CALIBRATION_STEPS);
-  calibration_data.gz = (int)(tmp_imu_calibration_data[2] / IMU_CALIBRATION_STEPS);
-
-
-
-  // TODO remove
-  ExtendedKalmanFilter ekf = ExtendedKalmanFilter(3, 0.98);
-  float gyro[3];
-  float acc[3];
-  ekf.update(gyro, acc);
+  // Average the accumulated readings to get the calibration data
+  // This will give the bias values for the sensor
+  calibration_data.gx = (int16_t)(tmp_imu_calibration_data[0] / IMU_CALIBRATION_STEPS);
+  calibration_data.gy = (int16_t)(tmp_imu_calibration_data[1] / IMU_CALIBRATION_STEPS);
+  calibration_data.gz = (int16_t)(tmp_imu_calibration_data[2] / IMU_CALIBRATION_STEPS);
 }
 
-// imu get raw data
 void imu_get_raw_data(imu_raw_t *data)
 {
   data->gx = raw_data.gx;
@@ -130,4 +79,19 @@ void imu_get_raw_data(imu_raw_t *data)
   data->ax = raw_data.ax;
   data->ay = raw_data.ay;
   data->az = raw_data.az;
+}
+
+void imu_get_data(imu_data_t *data)
+{
+  // 500deg/sec config output will be 65.5/deg/s
+  data->gx = ((float)raw_data.gx) / 65.5;
+  data->gy = ((float)raw_data.gy) / 65.5;
+  data->gz = ((float)raw_data.gz) / 65.5;
+
+  // 8g configuration output will be 4096/g
+  // i.e. 4096 for 9.81 m/s
+  // i.e. for 1 m/s value will be 417.53313
+  data->ax = ((float)raw_data.ax) / 417.53313;
+  data->ay = ((float)raw_data.ay) / 417.53313;
+  data->az = ((float)raw_data.az) / 417.53313;
 }

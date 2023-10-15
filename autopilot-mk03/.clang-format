@@ -1,11 +1,12 @@
+
 Language:        Cpp # Set the primary language this format configuration is targeting
 BasedOnStyle:    Google # Use LLVM as the base style
 
 
-# Set the maximum number of characters in a single line.
+
 ColumnLimit:     150
 
-# Indent width for line continuations.
-ContinuationIndentWidth: 4
+IndentWidth: 4
+ContinuationIndentWidth: 8
 
-
+AllowShortFunctionsOnASingleLine: None
