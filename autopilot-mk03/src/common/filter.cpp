@@ -4,7 +4,6 @@
 #include "io/indiactor.h"
 #include "memory_manager.h"
 
-unsigned long tmp_time_count;
 
 #ifdef XYZ_AXIS_COUNT
 #if XYZ_AXIS_COUNT == 3
@@ -37,8 +36,8 @@ matrix_3f_t ekf_state = {.value = {0.0, 0.0, 0.0}};
 matrix_3f_t ekf_residual = {.value = {0.0, 0.0, 0.0}};
 
 simple_low_pass_filter_1d_t ekf_low_pass_filter_acc;
-row_col_t ekf_size = {.row = XYZ_AXIS_COUNT, .col = XYZ_AXIS_COUNT};
-row_col_t ekf_1d_size = {.row = XYZ_AXIS_COUNT, .col = 1};
+// row_col_t ekf_size = {.row = XYZ_AXIS_COUNT, .col = XYZ_AXIS_COUNT};
+// row_col_t ekf_1d_size = {.row = XYZ_AXIS_COUNT, .col = 1};
 
 matrix_3x3f_t matrix_eye = {.value = {
                                     {1.0, 0.0, 0.0},
@@ -167,54 +166,37 @@ void ekf_init(float alpha) {
 
 void ekf_update(float *gyro, float *acc) {
     // predictions steps
-    for (uint8_t i = 0; i < XYZ_AXIS_COUNT; i++) {
-        ekf_state.value[i] += gyro[i] * LOOP_TIME;
-    }
+    ekf_state.value[0] += gyro[0] * LOOP_TIME;
+    ekf_state.value[1] += gyro[1] * LOOP_TIME;
+    ekf_state.value[2] += gyro[2] * LOOP_TIME;
 
     // Jacobians and other necessary matrices should be computed here
 
-    
-    //   matrix_float_add(ekf_P, ekf_Q, ekf_P, ekf_size);
     matrix_add_f(&ekf_P, &ekf_Q, &ekf_P);
-    
 
     // update steps
     simple_low_pass_filter_update(&ekf_low_pass_filter_acc, acc);
     // Compute measurement residual
-    for (uint8_t i = 0; i < ekf_size.row; i++) {
-        ekf_residual.value[i] = ekf_low_pass_filter_acc.data[i] - ekf_state.value[i];
-    }
-    // Compute kalman gain
-    //   matrix_float_add(ekf_P, ekf_R, tmp_matrix_1, ekf_size);
-    //   matrix_float_inverse(tmp_matrix_1, tmp_matrix_2, ekf_size.row);
-    //   matrix_float_multiply(ekf_P, ekf_size, tmp_matrix_2, ekf_size, ekf_K);
+    ekf_residual.value[0] = ekf_low_pass_filter_acc.data[0] - ekf_state.value[0];
+    ekf_residual.value[1] = ekf_low_pass_filter_acc.data[1] - ekf_state.value[1];
+    ekf_residual.value[2] = ekf_low_pass_filter_acc.data[2] - ekf_state.value[2];
 
+    // Compute kalman gain
     matrix_add_f(&ekf_P, &ekf_R, &tmp_matrix_3x3f_1);
     matrix_inverse_f(&tmp_matrix_3x3f_1, &tmp_matrix_3x3f_2);
-    tmp_time_count = micros();
     matrix_multiply_f(&ekf_P, &tmp_matrix_3x3f_2, &ekf_K);
-    tmp_time_count = micros() - tmp_time_count;
 
     // Update state estimate
-    //   matrix_float_multiply(ekf_K, ekf_size, ekf_residual, ekf_1d_size, tmp_matrix_1);
-    //   matrix_float_add(ekf_state, tmp_matrix_1, ekf_state, ekf_1d_size);
     matrix_multiply_f(&ekf_K, &ekf_residual, &tmp_matrix_3f_1);
     matrix_add_f(&ekf_state, &tmp_matrix_3f_1, &ekf_state);
 
     // Update error covariance
-    //   matrix_float_substract(matrix_eye, ekf_K, tmp_matrix_1, ekf_size);
-    //   matrix_float_multiply(tmp_matrix_1, ekf_size, ekf_P, ekf_size, tmp_matrix_2);
-    //   matrix_float_copy(ekf_P, tmp_matrix_2, ekf_size);
     matrix_substract_f(&matrix_eye, &ekf_K, &tmp_matrix_3x3f_1);
     matrix_multiply_f(&tmp_matrix_3x3f_1, &ekf_P, &tmp_matrix_3x3f_2);
     matrix_copy_f(&tmp_matrix_3x3f_2, &ekf_P);
-    
 }
 
 matrix_3f_t *ekf_get_state() {
     return &ekf_state;
 }
 
-unsigned long get_time_diff() {
-    return tmp_time_count;
-}

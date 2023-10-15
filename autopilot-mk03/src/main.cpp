@@ -2,6 +2,7 @@
 
 #include "common/axis.h"
 #include "common/filter.h"
+#include "common/timer.h"
 #include "flight/imu.h"
 #include "io/indiactor.h"
 
@@ -42,31 +43,10 @@ void setup() {
 
 void loop() {
   // read imu data
+  start_time_count();
   imu_read_data();
-
-  // imu_get_raw_data(&imu_raw_data);
-  // Serial.print(imu_raw_data.gx); Serial.print(",");
-  // Serial.print(imu_raw_data.gy); Serial.print(",");
-  // Serial.print(imu_raw_data.gz); Serial.print(",");
-  // Serial.print(imu_raw_data.ax); Serial.print(",");
-  // Serial.print(imu_raw_data.ay); Serial.print(",");
-  // Serial.print(imu_raw_data.az); //Serial.print(",");
-  // Serial.println("");
-
-
+  end_time_count();
   imu_get_data(&imu_data);
-  // Serial.print(imu_data.gx);
-  // Serial.print(",");
-  // Serial.print(imu_data.gy);
-  // Serial.print(",");
-  // Serial.print(imu_data.gz);
-  // Serial.print(",");
-  // Serial.print(imu_data.ax);
-  // Serial.print(",");
-  // Serial.print(imu_data.ay);
-  // Serial.print(",");
-  // Serial.print(imu_data.az); // Serial.print(",");
-  // Serial.println("");
 
   // calculate angle
   accl_angle[0] = atan2f(imu_data.ay, sqrtf(imu_data.ax * imu_data.ax + imu_data.az * imu_data.az)) * 180 / M_PI;
@@ -79,6 +59,7 @@ void loop() {
   gyro_data[2] = imu_data.gz;
 
 
+  
   ekf_update(gyro_data, accl_angle);
 
   // matrix_3f_t *state = ekf_get_state();
@@ -86,7 +67,7 @@ void loop() {
   // Serial.print(state->value[0]); Serial.print(",");
   // Serial.print(state->value[1]); Serial.print(",");
   // Serial.print(state->value[2]); Serial.print(",");
-  Serial.println(get_time_diff());
+  Serial.println(get_time_count());
   // Serial.println("");
 
   // loop time

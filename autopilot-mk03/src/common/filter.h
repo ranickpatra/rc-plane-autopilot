@@ -37,5 +37,3 @@ uint16_t mean_accumulator_calculate(mean_accumulator_t *filter, int16_t default_
 void ekf_init(float alpha);
 void ekf_update(float *gyro, float *acc);
 matrix_3f_t *ekf_get_state();
-
-unsigned long get_time_diff();
