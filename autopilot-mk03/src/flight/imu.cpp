@@ -84,14 +84,16 @@ void imu_get_raw_data(imu_raw_t *data)
 void imu_get_data(imu_data_t *data)
 {
   // 500deg/sec config output will be 65.5/deg/s
-  data->gx = ((float)raw_data.gx) / 65.5;
-  data->gy = ((float)raw_data.gy) / 65.5;
-  data->gz = ((float)raw_data.gz) / 65.5;
+  // 1/65.5 = 0.015267176
+  data->gx = ((float)raw_data.gx) * 0.015267176;
+  data->gy = ((float)raw_data.gy) * 0.015267176;
+  data->gz = ((float)raw_data.gz) * 0.015267176;
 
   // 8g configuration output will be 4096/g
   // i.e. 4096 for 9.81 m/s
   // i.e. for 1 m/s value will be 417.53313
-  data->ax = ((float)raw_data.ax) / 417.53313;
-  data->ay = ((float)raw_data.ay) / 417.53313;
-  data->az = ((float)raw_data.az) / 417.53313;
+  // 1/417.53313 = 0.00239502
+  data->ax = ((float)raw_data.ax) * 0.00239502;
+  data->ay = ((float)raw_data.ay) * 0.00239502;
+  data->az = ((float)raw_data.az) * 0.00239502;
 }

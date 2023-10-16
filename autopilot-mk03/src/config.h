@@ -1,6 +1,6 @@
 #pragma once
 
-// #define TEST_C
+#define TEST_C
 
 #ifndef TEST_C
   #define LOOP_TIME_MICROSECONDS 4000  // loop time in micro seconds
