@@ -4,7 +4,6 @@
 #include "io/indiactor.h"
 #include "memory_manager.h"
 
-
 #ifdef XYZ_AXIS_COUNT
 #if XYZ_AXIS_COUNT == 3
 
@@ -53,42 +52,15 @@ matrix_3x3f_t tmp_matrix_3x3f_1;
 matrix_3x3f_t tmp_matrix_3x3f_2;
 matrix_3f_t tmp_matrix_3f_1;
 
-/**
- * @brief Initializes a simple low-pass filter.
- *
- * The low-pass filter is defined by its alpha parameter which determines the degree
- * to which the previous value affects the new value. An alpha of 1 will make
- * the filter hold its previous value, while an alpha of 0 will make the filter
- * fully adapt to the new value.
- *
- * @param filter Pointer to the filter structure to be initialized.
- * @param alpha Weighting factor. Must be between 0.0 and 1.0.
- */
 void simple_low_pass_filter_init(simple_low_pass_filter_t *filter, float alpha) {
     filter->data = 0;
     filter->alpha = alpha;
 }
 
-/**
- * @brief Updates the low-pass filter with a new data point.
- *
- * The function uses the alpha parameter of the filter to determine the weighting
- * of the previous value versus the new value.
- *
- * @param filter Pointer to the filter structure to be updated.
- * @param data New data point.
- */
 void simple_low_pass_filter_update(simple_low_pass_filter_t *filter, float data) {
     filter->data = filter->alpha * filter->data + (1 - filter->alpha) * data;
 }
 
-/**
- * Initializes a simple 1D low pass filter.
- *
- * @param filter  Pointer to the filter structure to initialize.
- * @param size    The number of data points the filter will handle.
- * @param alpha   The smoothing factor, typically between 0 (no smoothing) and 1.
- */
 void simple_low_pass_filter_init(simple_low_pass_filter_1d_t *filter, uint8_t size, float alpha) {
     // Allocate memory for the data based on the provided size
     filter->data = new float[size];
@@ -103,12 +75,6 @@ void simple_low_pass_filter_init(simple_low_pass_filter_1d_t *filter, uint8_t si
     filter->alpha = alpha;
 }
 
-/**
- * Updates the filter's data with new input data using a low-pass filter algorithm.
- *
- * @param filter  Pointer to the filter structure to update.
- * @param data    Pointer to an array of new data to be filtered.
- */
 void simple_low_pass_filter_update(simple_low_pass_filter_1d_t *filter, float *data) {
     // For each data point, apply the low-pass filter formula
     // which is a weighted average between the existing data and new data
@@ -117,40 +83,15 @@ void simple_low_pass_filter_update(simple_low_pass_filter_1d_t *filter, float *d
     }
 }
 
-/**
- * @brief Initializes a mean accumulator.
- *
- * The mean accumulator is used to calculate the mean of a series of values.
- *
- * @param filter Pointer to the accumulator structure to be initialized.
- */
 void mean_accumulator_init(mean_accumulator_t *filter) {
     filter->data = 0;
     filter->count = 0;
 }
-
-/**
- * @brief Adds a new data point to the mean accumulator.
- *
- * This function updates the sum of data and the count of data points.
- *
- * @param filter Pointer to the accumulator structure to be updated.
- * @param data New data point.
- */
 void mean_accumulator_add(mean_accumulator_t *filter, int32_t data) {
     filter->data += data;
     filter->count++;
 }
 
-/**
- * @brief Calculates the mean value of the accumulated data points.
- *
- * After calculation, the accumulator is reinitialized.
- *
- * @param filter Pointer to the accumulator structure.
- * @param default_value Value to be returned if there are no data points accumulated.
- * @return The mean value of the accumulated data points or the default_value.
- */
 uint16_t mean_accumulator_calculate(mean_accumulator_t *filter, int16_t default_value) {
     if (filter->count) {
         uint16_t result = filter->data / filter->count;
@@ -199,4 +140,3 @@ void ekf_update(float *gyro, float *acc) {
 matrix_3f_t *ekf_get_state() {
     return &ekf_state;
 }
-

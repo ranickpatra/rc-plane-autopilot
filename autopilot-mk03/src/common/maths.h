@@ -3,6 +3,8 @@
 #include <stdint.h>
 #include "global.h"
 
+#define RAD_2_DEGREE 57.295779513
+
 
 struct row_col_t
 {
