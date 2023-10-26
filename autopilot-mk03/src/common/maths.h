@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include "global.h"
 
-#define RAD_2_DEGREE 57.295779513
+// #define RAD_2_DEGREE 57.295779513
 
 
 struct row_col_t
@@ -26,6 +26,7 @@ struct matrix_3f_t
 
 
 // matrix
+// --------------------------------------------
 
 void matrix_add_f(matrix_3x3f_t *mat1, matrix_3x3f_t *mat2, matrix_3x3f_t *result);
 void matrix_add_f(matrix_3f_t *mat1, matrix_3f_t *mat2, matrix_3f_t *result);
@@ -40,3 +41,5 @@ bool matrix_inverse_f(matrix_3x3f_t *mat, matrix_3x3f_t *mat_inv);
 
 
 void matrix_copy_f(matrix_3x3f_t *src, matrix_3x3f_t *dest);
+
+

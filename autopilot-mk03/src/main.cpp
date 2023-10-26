@@ -6,6 +6,8 @@
 #include "flight/imu.h"
 #include "io/indiactor.h"
 
+#include "fc/init.h"
+
 imu_raw_t imu_raw_data;
 imu_data_t imu_data;
 float accl_angle[3];
@@ -47,8 +49,10 @@ void loop() {
 
     // calculate angle
     // 180 / PI = 57.295779513
-    accl_angle[0] = atan2f(imu_data.ay, sqrtf(imu_data.ax * imu_data.ax + imu_data.az * imu_data.az)) * RAD_2_DEGREE;
-    accl_angle[1] = atan2f(imu_data.ax, sqrtf(imu_data.ay * imu_data.ay + imu_data.az * imu_data.az)) * RAD_2_DEGREE;
+    // accl_angle[0] = atan2f(imu_data.ay, sqrtf(imu_data.ax * imu_data.ax + imu_data.az * imu_data.az)) * RAD_2_DEGREE;
+    // accl_angle[1] = atan2f(imu_data.ax, sqrtf(imu_data.ay * imu_data.ay + imu_data.az * imu_data.az)) * RAD_2_DEGREE;
+    accl_angle[0] = degrees(atan2f(imu_data.ay, sqrtf(imu_data.ax * imu_data.ax + imu_data.az * imu_data.az)));
+    accl_angle[1] = degrees(atan2f(imu_data.ax, sqrtf(imu_data.ay * imu_data.ay + imu_data.az * imu_data.az)));
     accl_angle[2] = 0;
 
     float gyro_data[3];
