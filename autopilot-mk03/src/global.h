@@ -1,7 +1,9 @@
 #pragma once
 
-struct vector_float_3D_t
-{
-  float x, y, z;
-};
+#define SERIAL_BAUDRATE 115200
 
+#define CALIBRATION
+
+#ifndef CALIBRATION
+#define FLIGHT
+#endif

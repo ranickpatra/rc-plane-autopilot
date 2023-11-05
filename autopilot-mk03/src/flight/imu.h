@@ -3,7 +3,7 @@
 // #include <Arduino.h>
 #include <Wire.h>
 #include "io/indiactor.h"
-#include "config.h"
+#include "common/craft.h"
 
 struct imu_raw_t
 {
@@ -43,3 +43,4 @@ void imu_read_data();
 void imu_calibrate();
 void imu_get_raw_data(imu_raw_t *data);
 void imu_get_data(imu_data_t *data);
+imu_calibration_t *imu_get_calibration_data();

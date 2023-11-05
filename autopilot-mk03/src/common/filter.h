@@ -1,7 +1,7 @@
 #pragma once
 
 #include <stdint.h>
-#include "config.h"
+#include "common/craft.h"
 #include "global.h"
 #include "maths.h"
 

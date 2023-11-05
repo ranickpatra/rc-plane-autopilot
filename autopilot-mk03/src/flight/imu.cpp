@@ -52,7 +52,7 @@ void imu_calibrate()
 
     // Blink an indicator LED every 50 readings to show that calibration is in progress
     if (i % 50 == 0)
-      indicator_blink();
+      indicator_red_blink();
 
     // Wait until it's time for the next reading
     while (loop_time > micros())
@@ -62,7 +62,7 @@ void imu_calibrate()
   }
 
   // Turn off the indicator LED to show that calibration is complete
-  indicator_off();
+  indicator_red_off();
 
   // Average the accumulated readings to get the calibration data
   // This will give the bias values for the sensor
@@ -96,4 +96,9 @@ void imu_get_data(imu_data_t *data)
   data->ax = ((float)raw_data.ax) * 0.00239502;
   data->ay = ((float)raw_data.ay) * 0.00239502;
   data->az = ((float)raw_data.az) * 0.00239502;
+}
+
+
+imu_calibration_t *imu_get_calibration_data() {
+  return &calibration_data;
 }

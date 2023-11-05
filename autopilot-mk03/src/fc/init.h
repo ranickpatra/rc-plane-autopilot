@@ -14,3 +14,5 @@ enum systemState_e {
 
 extern systemState_e systemState;
 
+
+void fc_init();
