@@ -2,8 +2,10 @@
 
 #define SERIAL_BAUDRATE 115200
 
-#define CALIBRATION
-
-#ifndef CALIBRATION
-#define FLIGHT
+// #define FLIGHT
+#ifndef FLIGHT
+// #define CALIBRATION
+// #define RC_RECEIVER_TEST
+// #define FIN_TEST
+#define PROPELLER_TEST
 #endif

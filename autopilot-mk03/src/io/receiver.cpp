@@ -71,3 +71,7 @@ void receiver_on_interrupt() {
         receiver_input_channel[3] = current_time - timers[3];
     }
 }
+
+uint16_t *receiver_get_channel_data() {
+    return (uint16_t *)receiver_input_channel;
+}

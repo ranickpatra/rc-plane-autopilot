@@ -1,10 +1,7 @@
 #pragma once
 
 #define LOOP_TIME_MICROSECONDS 10000  // loop time in micro seconds
-#define LOOP_TIME 0.01  // loop time in seconds
-
-#define IMU_CALIBRATION_STEPS 2000  // steps to calibrate the IMU
-
+#define LOOP_TIME 0.01                // loop time in seconds
 
 
 // Indicators
@@ -23,7 +20,6 @@
 #define SERVO_PIN_4 PB3
 #define PROPELLER_PIN PB4
 
-
 // receiver
 #define RECEIVER_CHANNEL_COUNT 4
 #define RECEIVER_DDR DDRD
@@ -39,3 +35,7 @@
 #define RECEIVER_PCINT_CHANNEL_2 PCINT19
 #define RECEIVER_PCINT_CHANNEL_3 PCINT20
 #define RECEIVER_PCINT_CHANNEL_4 PCINT21
+
+// IMU
+#define IMU_CALIBRATION_STEPS 2000  // steps to calibrate the IMU
+#define IMU_CALIBRATION_DATA { -80, 78, -12, 0, 0, 0 }

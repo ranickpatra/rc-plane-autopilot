@@ -5,6 +5,17 @@
 #include "io/indiactor.h"
 #include "common/craft.h"
 
+// calibration data
+// -87,79,-11
+
+// -82,79,-11 
+// -81,78,-12 
+// -80,78,-12 
+// -79,79,-12
+// -78,78,-12 
+
+// -86,81,-11
+
 struct imu_raw_t
 {
   int16_t gx;

@@ -16,11 +16,11 @@ void fin_init() {
     ACTUATOR_PORT &= ~SERVO_PINS_ALL;
 }
 
-void set_fin_pins_high(unsigned long f1_time, unsigned long f2_time, unsigned long f3_time, unsigned long f4_time) {
-    fin_1_time = f1_time;
-    fin_2_time = f2_time;
-    fin_3_time = f3_time;
-    fin_4_time = f4_time;
+void set_fin_pins_high(unsigned long f1_time, unsigned long f2_time, unsigned long f3_time, unsigned long f4_time, unsigned long pulse_start_time) {
+    fin_1_time = pulse_start_time + (f1_time > 2000 ? 2000 : (f1_time < 1000 ? 1000 : f1_time));
+    fin_2_time = pulse_start_time + (f2_time > 2000 ? 2000 : (f2_time < 1000 ? 1000 : f2_time));
+    fin_3_time = pulse_start_time + (f3_time > 2000 ? 2000 : (f3_time < 1000 ? 1000 : f3_time));
+    fin_4_time = pulse_start_time + (f4_time > 2000 ? 2000 : (f4_time < 1000 ? 1000 : f4_time));
     ACTUATOR_PORT |= SERVO_PINS_ALL;
 }
 
