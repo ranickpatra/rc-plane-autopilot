@@ -14,18 +14,18 @@
 // servos and motor
 #define ACTUATOR_DDR DDRB
 #define ACTUATOR_PORT PORTB
-#define SERVO_PIN_1 PB0
-#define SERVO_PIN_2 PB1
-#define SERVO_PIN_3 PB2
-#define SERVO_PIN_4 PB3
+#define SERVO_PIN_1 PB2
+#define SERVO_PIN_2 PB3
+#define SERVO_PIN_3 PB0
+#define SERVO_PIN_4 PB1
 #define PROPELLER_PIN PB4
 
 // fins
 #define FIN_PULSE_MAX 2000
 #define FIN_PULSE_MIN 1000
-// #define FIN_1_DIRECTION_REV
+#define FIN_1_DIRECTION_REV
 // #define FIN_2_DIRECTION_REV
-#define FIN_3_DIRECTION_REV
+// #define FIN_3_DIRECTION_REV
 // #define FIN_4_DIRECTION_REV
 
 // receiver
