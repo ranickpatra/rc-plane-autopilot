@@ -5,6 +5,9 @@
 // to reverse 2000-value+1000
 // i.e 3000-value
 #define FIN_REV_OFFSET (FIN_PULSE_MAX + FIN_PULSE_MIN)
+#define FIN_ANGLE_RANGE 90
+#define FIN_ANGLE_OFFSET (FIN_ANGLE_RANGE / 2)
+#define FIN_ANGLE_TO_PULSE ((FIN_PULSE_MAX - FIN_PULSE_MIN) / 90)
 
 #define SERVO_PIN_1_BIT (1 << SERVO_PIN_1)
 #define SERVO_PIN_2_BIT (1 << SERVO_PIN_2)
@@ -46,6 +49,21 @@ void set_fin_pins_high(uint16_t f1_time, uint16_t f2_time, uint16_t f3_time, uin
 #else
     fin_4_time = pulse_start_time + FIN_REV_OFFSET - (f4_time > FIN_PULSE_MAX ? FIN_PULSE_MAX : (f4_time < FIN_PULSE_MIN ? FIN_PULSE_MIN : f4_time));
 #endif
+}
+
+void set_fin_angles(int16_t f1, int16_t f2, int16_t f3, int16_t f4, unsigned long pulse_start_time) {
+    // all ping to heigh because in the 1000µs gap 
+    // which is the min wait time to stop the pulse 
+    // it will do all the calculations necessary to adjust the fin
+    ACTUATOR_PORT |= SERVO_PINS_ALL;
+
+    // convert angle to µs pulse
+    f1 = (f1 + FIN_ANGLE_OFFSET) * FIN_ANGLE_TO_PULSE + FIN_PULSE_MIN;
+    f2 = (f2 + FIN_ANGLE_OFFSET) * FIN_ANGLE_TO_PULSE + FIN_PULSE_MIN;
+    f3 = (f3 + FIN_ANGLE_OFFSET) * FIN_ANGLE_TO_PULSE + FIN_PULSE_MIN;
+    f4 = (f4 + FIN_ANGLE_OFFSET) * FIN_ANGLE_TO_PULSE + FIN_PULSE_MIN;
+
+    set_fin_pins_high((uint16_t) f1, (uint16_t) f2, (uint16_t) f3, (uint16_t) f4, pulse_start_time);
 }
 
 uint8_t update_fins(unsigned long current_time) {

@@ -76,23 +76,41 @@ void loop() {
 
 #ifdef FIN_TEST
 
-    uint16_t pulse_time = 1000;
+    // uint16_t pulse_time = 1000;
+
+    // switch ((millis() / 10000) % 4) {
+    //     case 0:
+    //         pulse_time = 1000;
+    //         break;
+    //     case 1:
+    //         pulse_time = 2000;
+    //         break;
+    //     case 2:
+    //     case 3:
+    //         pulse_time = 1500;
+    //         break;
+    // }
+
+    // pwm_loop_timer = micros();
+    // set_fin_pins_high(pulse_time, pulse_time, pulse_time, pulse_time, pwm_loop_timer);
+
+    int16_t fin_angle = 0;
 
     switch ((millis() / 10000) % 4) {
         case 0:
-            pulse_time = 1000;
+            fin_angle = -45;
             break;
         case 1:
-            pulse_time = 2000;
+            fin_angle = 45;
             break;
         case 2:
         case 3:
-            pulse_time = 1500;
+            fin_angle = 0;
             break;
     }
 
     pwm_loop_timer = micros();
-    set_fin_pins_high(pulse_time, pulse_time, pulse_time, pulse_time, pwm_loop_timer);
+    set_fin_angles(fin_angle, fin_angle, fin_angle, fin_angle, pwm_loop_timer);
 
     do {
         pwm_loop_timer = micros();
