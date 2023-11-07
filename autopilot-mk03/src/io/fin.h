@@ -5,5 +5,5 @@
 
 
 void fin_init();
-void set_fin_pins_high(unsigned long f1_time, unsigned long f2_time, unsigned long f3_time, unsigned long f4_time, unsigned long pulse_start_time);
+void set_fin_pins_high(uint16_t f1_time, uint16_t f2_time, uint16_t f3_time, uint16_t f4_time, unsigned long pulse_start_time);
 uint8_t update_fins(unsigned long current_time);

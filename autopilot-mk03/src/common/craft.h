@@ -20,6 +20,14 @@
 #define SERVO_PIN_4 PB3
 #define PROPELLER_PIN PB4
 
+// fins
+#define FIN_PULSE_MAX 2000
+#define FIN_PULSE_MIN 1000
+// #define FIN_1_DIRECTION_REV
+// #define FIN_2_DIRECTION_REV
+#define FIN_3_DIRECTION_REV
+// #define FIN_4_DIRECTION_REV
+
 // receiver
 #define RECEIVER_CHANNEL_COUNT 4
 #define RECEIVER_DDR DDRD

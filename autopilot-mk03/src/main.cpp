@@ -1,9 +1,10 @@
 #include <Arduino.h>
 
+#include "fc/states.h"
 #include "common/axis.h"
 #include "common/craft.h"
 #include "common/filter.h"
-#include "common/timer.h"
+// #include "common/timer.h"
 #include "fc/init.h"
 #include "flight/imu.h"
 #include "io/fin.h"
@@ -85,8 +86,6 @@ void loop() {
             pulse_time = 2000;
             break;
         case 2:
-            pulse_time = 1200;
-            break;
         case 3:
             pulse_time = 1500;
             break;
@@ -95,13 +94,9 @@ void loop() {
     pwm_loop_timer = micros();
     set_fin_pins_high(pulse_time, pulse_time, pulse_time, pulse_time, pwm_loop_timer);
 
-    start_time_count();
     do {
         pwm_loop_timer = micros();
     } while (update_fins(pwm_loop_timer));
-
-    end_time_count();
-    Serial.println(get_time_count());
 
 #endif
 
@@ -168,17 +163,13 @@ void loop() {
     gyro_data[1] = imu_data.gy;
     gyro_data[2] = imu_data.gz;
 
-    start_time_count();
 
     ekf_update(gyro_data, accl_angle);
-
-    end_time_count();
 
     matrix_3f_t *state = ekf_get_state();
     // Serial.print(state->value[0]); Serial.print(",");
     // Serial.print(state->value[1]); Serial.print(",");
     // Serial.print(state->value[2]); Serial.print(",");
-    Serial.println(get_time_count());
     // Serial.println("");
 #endif
 

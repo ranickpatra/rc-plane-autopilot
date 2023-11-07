@@ -6,6 +6,7 @@
 #include "io/indiactor.h"
 #include "io/propeller.h"
 #include "io/receiver.h"
+#include "states.h"
 
 systemState_e system_state = SYSTEM_STATE_INITIALISING;
 

@@ -2,6 +2,10 @@
 
 #include "common/craft.h"
 
+// to reverse 2000-value+1000
+// i.e 3000-value
+#define FIN_REV_OFFSET (FIN_PULSE_MAX + FIN_PULSE_MIN)
+
 #define SERVO_PIN_1_BIT (1 << SERVO_PIN_1)
 #define SERVO_PIN_2_BIT (1 << SERVO_PIN_2)
 #define SERVO_PIN_3_BIT (1 << SERVO_PIN_3)
@@ -16,12 +20,32 @@ void fin_init() {
     ACTUATOR_PORT &= ~SERVO_PINS_ALL;
 }
 
-void set_fin_pins_high(unsigned long f1_time, unsigned long f2_time, unsigned long f3_time, unsigned long f4_time, unsigned long pulse_start_time) {
-    fin_1_time = pulse_start_time + (f1_time > 2000 ? 2000 : (f1_time < 1000 ? 1000 : f1_time));
-    fin_2_time = pulse_start_time + (f2_time > 2000 ? 2000 : (f2_time < 1000 ? 1000 : f2_time));
-    fin_3_time = pulse_start_time + (f3_time > 2000 ? 2000 : (f3_time < 1000 ? 1000 : f3_time));
-    fin_4_time = pulse_start_time + (f4_time > 2000 ? 2000 : (f4_time < 1000 ? 1000 : f4_time));
+void set_fin_pins_high(uint16_t f1_time, uint16_t f2_time, uint16_t f3_time, uint16_t f4_time, unsigned long pulse_start_time) {
     ACTUATOR_PORT |= SERVO_PINS_ALL;
+
+#ifndef FIN_1_DIRECTION_REV
+    fin_1_time = pulse_start_time + (f1_time > FIN_PULSE_MAX ? FIN_PULSE_MAX : (f1_time < FIN_PULSE_MIN ? FIN_PULSE_MIN : f1_time));
+#else
+    fin_1_time = pulse_start_time + FIN_REV_OFFSET - (f1_time > FIN_PULSE_MAX ? FIN_PULSE_MAX : (f1_time < FIN_PULSE_MIN ? FIN_PULSE_MIN : f1_time));
+#endif
+
+#ifndef FIN_2_DIRECTION_REV
+    fin_2_time = pulse_start_time + (f2_time > FIN_PULSE_MAX ? FIN_PULSE_MAX : (f2_time < FIN_PULSE_MIN ? FIN_PULSE_MIN : f2_time));
+#else
+    fin_2_time = pulse_start_time + FIN_REV_OFFSET - (f2_time > FIN_PULSE_MAX ? FIN_PULSE_MAX : (f2_time < FIN_PULSE_MIN ? FIN_PULSE_MIN : f2_time));
+#endif
+
+#ifndef FIN_3_DIRECTION_REV
+    fin_3_time = pulse_start_time + (f3_time > FIN_PULSE_MAX ? FIN_PULSE_MAX : (f3_time < FIN_PULSE_MIN ? FIN_PULSE_MIN : f3_time));
+#else
+    fin_3_time = pulse_start_time + FIN_REV_OFFSET - (f3_time > FIN_PULSE_MAX ? FIN_PULSE_MAX : (f3_time < FIN_PULSE_MIN ? FIN_PULSE_MIN : f3_time));
+#endif
+
+#ifndef FIN_4_DIRECTION_REV
+    fin_4_time = pulse_start_time + (f4_time > FIN_PULSE_MAX ? FIN_PULSE_MAX : (f4_time < FIN_PULSE_MIN ? FIN_PULSE_MIN : f4_time));
+#else
+    fin_4_time = pulse_start_time + FIN_REV_OFFSET - (f4_time > FIN_PULSE_MAX ? FIN_PULSE_MAX : (f4_time < FIN_PULSE_MIN ? FIN_PULSE_MIN : f4_time));
+#endif
 }
 
 uint8_t update_fins(unsigned long current_time) {
