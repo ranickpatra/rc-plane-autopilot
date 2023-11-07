@@ -10,9 +10,9 @@
 #define RECEIVER_CHANNEL_PIN_ALL (RECEIVER_CHANNEL_1_PIN_BIT | RECEIVER_CHANNEL_2_PIN_BIT | RECEIVER_CHANNEL_3_PIN_BIT | RECEIVER_CHANNEL_4_PIN_BIT)
 
 volatile uint16_t receiver_input_channel[RECEIVER_CHANNEL_COUNT];  // to hold the channel data from receiver
-uint8_t channel_states[RECEIVER_CHANNEL_COUNT] = {0, 0, 0, 0};
-unsigned long timers[RECEIVER_CHANNEL_COUNT] = {0, 0, 0, 0};
-unsigned long current_time;
+uint8_t receiver_channel_states[RECEIVER_CHANNEL_COUNT] = {0, 0, 0, 0};
+unsigned long receiver_timers[RECEIVER_CHANNEL_COUNT] = {0, 0, 0, 0};
+long receiver_current_time;
 
 void receiver_init() {
     RECEIVER_DDR &= ~RECEIVER_CHANNEL_PIN_ALL;
@@ -25,50 +25,50 @@ void receiver_init() {
 }
 
 void receiver_on_interrupt() {
-    current_time = micros();  // read current time in microseconds
+    receiver_current_time = micros();  // read current time in microseconds
 
     // Channel 1
     if (RECEIVER_PIN & RECEIVER_CHANNEL_1_PIN_BIT) {
-        if (channel_states[0] == 0) {
-            channel_states[0] = 1;
-            timers[0] = current_time;
+        if (receiver_channel_states[0] == 0) {
+            receiver_channel_states[0] = 1;
+            receiver_timers[0] = receiver_current_time;
         }
-    } else if (channel_states[0] == 1) {
-        channel_states[0] = 0;
-        receiver_input_channel[0] = current_time - timers[0];
+    } else if (receiver_channel_states[0] == 1) {
+        receiver_channel_states[0] = 0;
+        receiver_input_channel[0] = receiver_current_time - receiver_timers[0];
     }
 
     // Channel 2
     if (RECEIVER_PIN & RECEIVER_CHANNEL_2_PIN_BIT) {
-        if (channel_states[1] == 0) {
-            channel_states[1] = 1;
-            timers[1] = current_time;
+        if (receiver_channel_states[1] == 0) {
+            receiver_channel_states[1] = 1;
+            receiver_timers[1] = receiver_current_time;
         }
-    } else if (channel_states[1] == 1) {
-        channel_states[1] = 0;
-        receiver_input_channel[1] = current_time - timers[1];
+    } else if (receiver_channel_states[1] == 1) {
+        receiver_channel_states[1] = 0;
+        receiver_input_channel[1] = receiver_current_time - receiver_timers[1];
     }
 
     // Channel 3
     if (RECEIVER_PIN & RECEIVER_CHANNEL_3_PIN_BIT) {
-        if (channel_states[2] == 0) {
-            channel_states[2] = 1;
-            timers[2] = current_time;
+        if (receiver_channel_states[2] == 0) {
+            receiver_channel_states[2] = 1;
+            receiver_timers[2] = receiver_current_time;
         }
-    } else if (channel_states[2] == 1) {
-        channel_states[2] = 0;
-        receiver_input_channel[2] = current_time - timers[2];
+    } else if (receiver_channel_states[2] == 1) {
+        receiver_channel_states[2] = 0;
+        receiver_input_channel[2] = receiver_current_time - receiver_timers[2];
     }
 
     // Channel 4
     if (RECEIVER_PIN & RECEIVER_CHANNEL_4_PIN_BIT) {
-        if (channel_states[3] == 0) {
-            channel_states[3] = 1;
-            timers[3] = current_time;
+        if (receiver_channel_states[3] == 0) {
+            receiver_channel_states[3] = 1;
+            receiver_timers[3] = receiver_current_time;
         }
-    } else if (channel_states[3] == 1) {
-        channel_states[3] = 0;
-        receiver_input_channel[3] = current_time - timers[3];
+    } else if (receiver_channel_states[3] == 1) {
+        receiver_channel_states[3] = 0;
+        receiver_input_channel[3] = receiver_current_time - receiver_timers[3];
     }
 }
 

@@ -12,7 +12,7 @@ enum systemState_e {
 };
 
 
-extern systemState_e systemState;
+extern systemState_e system_state;
 
 
 void fc_init();

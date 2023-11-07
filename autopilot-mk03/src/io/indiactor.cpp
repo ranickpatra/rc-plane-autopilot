@@ -58,3 +58,23 @@ void indicator_red_blink() {
         indicator_red_on();
     }
 }
+
+void indicator_show_number(uint8_t n) {
+    if (n == 1 || n == 3 || n == 5 || n == 7) {
+        indicator_red_on();
+    } else {
+        indicator_red_off();
+    }
+
+    if (n == 2 || n == 3 || n == 6 || n == 7) {
+        indicator_green_on();
+    } else {
+        indicator_green_off();
+    }
+
+    if (n == 4 || n == 5 || n == 6 || n == 7) {
+        indicator_blue_on();
+    } else {
+        indicator_blue_off();
+    }
+}

@@ -8,11 +8,14 @@
 #include "flight/imu.h"
 #include "io/fin.h"
 #include "io/interrupts.h"
+#include "io/propeller.h"
 
 imu_raw_t imu_raw_data;
 imu_data_t imu_data;
 float accl_angle[3];
 unsigned long loop_time, pwm_loop_timer;
+
+uint8_t loop_counter = 0;
 
 void setup() {
     fc_init();
@@ -36,8 +39,8 @@ void setup() {
 #ifdef FLIGHT
     ekf_init(0.96);
 
-    loop_time = micros() + LOOP_TIME_MICROSECONDS;
 #endif
+    loop_time = micros();
 }
 
 void loop() {
@@ -72,8 +75,6 @@ void loop() {
 
 #ifdef FIN_TEST
 
-    loop_time = micros();
-
     uint16_t pulse_time = 1000;
 
     switch ((millis() / 10000) % 4) {
@@ -102,12 +103,51 @@ void loop() {
     end_time_count();
     Serial.println(get_time_count());
 
-    while (micros() - loop_time < LOOP_TIME_MICROSECONDS)
-        ;
-
 #endif
 
 #ifdef PROPELLER_TEST
+    uint16_t pulse_time = 1000;
+
+#ifdef PROPELLER_ESC_CALIBRATION
+    // calibration of esc
+    unsigned long current_time = millis();
+    if (current_time < 20000) {
+        if (current_time < 8000)
+            pulse_time = 2000;
+        else
+            pulse_time = 1000;
+    } else {
+#endif
+
+        // testing of esc
+        if (loop_counter % 10 == 0) {
+            indicator_green_blink();
+        }
+
+        switch ((millis() / 8000) % 4) {
+            case 0:
+                pulse_time = 1000;
+                break;
+            case 1:
+                pulse_time = 1100;
+                break;
+            case 2:
+                pulse_time = 1500;
+                break;
+            case 3:
+                pulse_time = 2000;
+                break;
+        }
+
+#ifdef PROPELLER_ESC_CALIBRATION
+    }
+#endif
+    pwm_loop_timer = micros();
+    set_propeller_pin_high(pulse_time, pwm_loop_timer);
+
+    do {
+        pwm_loop_timer = micros();
+    } while (update_propeller(pwm_loop_timer));
 #endif
 
 #ifdef FLIGHT
@@ -140,37 +180,13 @@ void loop() {
     // Serial.print(state->value[2]); Serial.print(",");
     Serial.println(get_time_count());
     // Serial.println("");
+#endif
 
     // loop time
-    while (loop_time > micros())
+    while (micros() - loop_time < LOOP_TIME_MICROSECONDS)
         ;
-    loop_time = micros() + LOOP_TIME_MICROSECONDS;
-#endif
+    loop_time = micros();
+    loop_counter++;
 }
 
-// // STM32F103CBT6 -> CC3D
-
-// #include <Arduino.h>
-
-// int pins[3] = {14,15,16};
-// int delay_time = 500;
-
-// void setup() {
-//     for (uint8_t i = 0; i < 3; i++)
-//     {
-//         pinMode(pins[i], OUTPUT);
-//         digitalWrite(pins[i], LOW);
-//     }
-// }
-
-// void loop() {
-//     digitalWrite(pins[2], LOW);
-//     digitalWrite(pins[0], HIGH);
-//     delay(delay_time);
-//     digitalWrite(pins[0], LOW);
-//     digitalWrite(pins[1], HIGH);
-//     delay(delay_time);
-//     digitalWrite(pins[1], LOW);
-//     digitalWrite(pins[2], HIGH);
-//     delay(delay_time);
-// }
+// STM32F103CBT6 -> CC3D

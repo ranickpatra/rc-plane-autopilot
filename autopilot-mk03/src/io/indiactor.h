@@ -13,3 +13,5 @@ void indicator_red_off();
 void indicator_blue_blink();
 void indicator_green_blink();
 void indicator_red_blink();
+
+void indicator_show_number(uint8_t n);
