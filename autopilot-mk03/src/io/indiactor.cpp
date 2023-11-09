@@ -60,21 +60,18 @@ void indicator_red_blink() {
 }
 
 void indicator_show_number(uint8_t n) {
-    if (n == 1 || n == 3 || n == 5 || n == 7) {
+    if (n & B00000001)
         indicator_red_on();
-    } else {
+    else
         indicator_red_off();
-    }
 
-    if (n == 2 || n == 3 || n == 6 || n == 7) {
+    if (n & B00000010)
         indicator_green_on();
-    } else {
+    else
         indicator_green_off();
-    }
 
-    if (n == 4 || n == 5 || n == 6 || n == 7) {
+    if (n & B00000100)
         indicator_blue_on();
-    } else {
+    else
         indicator_blue_off();
-    }
 }
