@@ -1,8 +1,9 @@
 #pragma once
 
+# define SERIAL_DATA
 #define SERIAL_BAUDRATE 115200
 
-// #define FLIGHT
+#define FLIGHT
 #ifndef FLIGHT
 // #define CALIBRATION
 // #define RC_RECEIVER_TEST

@@ -2,6 +2,7 @@
 
 #define LOOP_TIME_MICROSECONDS 10000  // loop time in micro seconds
 #define LOOP_TIME 0.01                // loop time in seconds
+#define LOOP_TIME_INVERSE 100        // inverse of loop time 1/LOOP_TIME
 
 
 // Indicators

@@ -11,10 +11,9 @@ struct simple_low_pass_filter_t
   float alpha;
 };
 
-struct simple_low_pass_filter_1d_t
+struct simple_low_pass_filter_3f_t
 {
-  float *data;
-  uint8_t size;
+  matrix_3f_t data;
   float alpha;
 };
 
@@ -26,8 +25,8 @@ struct mean_accumulator_t
 
 void simple_low_pass_filter_init(simple_low_pass_filter_t *filter, float alpha);
 void simple_low_pass_filter_update(simple_low_pass_filter_t *filter, float data);
-void simple_low_pass_filter_init(simple_low_pass_filter_1d_t *filter, uint8_t size, float alpha);
-void simple_low_pass_filter_update(simple_low_pass_filter_1d_t *filter, float *data);
+void simple_low_pass_filter_init(simple_low_pass_filter_3f_t *filter, float alpha);
+void simple_low_pass_filter_update(simple_low_pass_filter_3f_t *filter, matrix_3f_t *data);
 
 void mean_accumulator_init(mean_accumulator_t *filter);
 void mean_accumulator_add(mean_accumulator_t *filter, int32_t data);
@@ -35,5 +34,5 @@ uint16_t mean_accumulator_calculate(mean_accumulator_t *filter, int16_t default_
 
 // kalman filter
 void ekf_init(float alpha);
-void ekf_update(float *gyro, float *acc);
+void ekf_update(matrix_3f_t *gyro, matrix_3f_t *acc);
 matrix_3f_t *ekf_get_state();

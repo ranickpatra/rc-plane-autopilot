@@ -2,9 +2,9 @@
 
 
 enum axis_e {
-    X = 0,
-    Y,
-    Z
+  AXIS_X = 0,
+  AXIS_Y,
+  AXIS_Z
 };
 
 #define XYZ_AXIS_COUNT 3
@@ -15,4 +15,4 @@ enum flight_dynamics_index_e {
   FD_YAW
 };
 
-#define FLIGHT_DYMANICS_INDEX_COUNT 3;
+#define FLIGHT_DYMANICS_INDEX_COUNT 3
