@@ -17,6 +17,10 @@ imu_data_t imu_data;
 matrix_3f_t accl_angle;
 matrix_3f_t gyro_data;
 unsigned long loop_time, pwm_loop_timer;
+receiver_channel_data_t* receiver_channel_data;
+
+matrix_3f_t *filtered_angle;
+pid_data_t *pid_fin_data;
 
 uint8_t loop_counter = 0;
 
@@ -162,6 +166,12 @@ void loop() {
         case 'd':
             pid_set_d(Serial.parseFloat());
             break;
+        case 'a':
+            pid_set_angle(Serial.parseFloat());
+            break;
+        case 'c':
+            pid_set_with_curve(Serial.parseInt());
+            break;
         }
 
         while (Serial.available())
@@ -171,6 +181,7 @@ void loop() {
     
 #endif
 
+    receiver_update();
     // read imu data
     imu_read_data();
     imu_get_data(&imu_data);
@@ -180,7 +191,7 @@ void loop() {
     // accl_angle[0] = atan2f(imu_data.ay, sqrtf(imu_data.ax * imu_data.ax + imu_data.az * imu_data.az)) * RAD_2_DEGREE;
     // accl_angle[1] = atan2f(imu_data.ax, sqrtf(imu_data.ay * imu_data.ay + imu_data.az * imu_data.az)) * RAD_2_DEGREE;
     accl_angle.value[0] = degrees(atan2f(imu_data.ay, sqrtf(imu_data.ax * imu_data.ax + imu_data.az * imu_data.az)));
-    accl_angle.value[1] = degrees(atan2f(imu_data.ax, sqrtf(imu_data.ay * imu_data.ay + imu_data.az * imu_data.az)));
+    accl_angle.value[1] = degrees(atan2f(-imu_data.ax, sqrtf(imu_data.ay * imu_data.ay + imu_data.az * imu_data.az)));
     accl_angle.value[2] = 0;
 
     gyro_data.value[0] = imu_data.gx;
@@ -189,21 +200,28 @@ void loop() {
 
     ekf_update(&gyro_data, &accl_angle);
 
-    matrix_3f_t *angle = ekf_get_state();  // getting the orientation of the craft
+    filtered_angle = ekf_get_state();  // getting the orientation of the craft
 
-    pid_update(angle);
+    receiver_channel_data = receiver_get_channel_data();    // read receiver channel
+    set_target_angle((((int16_t)receiver_channel_data->channel[0]) - 1500)*45/500,
+    (((int16_t)receiver_channel_data->channel[1]) - 1500)*45/500,
+    0);
 
-    pid_data_t *pid_data = pid_get_data();
+    pid_update(filtered_angle);
+
+    pid_fin_data = pid_get_data();
 
     pwm_loop_timer = micros();
-    set_propeller_pin_high(1000, pwm_loop_timer);
-    // set_fin_angles(state->value[0], state->value[1], state->value[0], state->value[1], pwm_loop_timer);
-    // set_fin_angles(-angle->value[2], angle->value[2], angle->value[2], -angle->value[2], pwm_loop_timer);
-    set_fin_angles(pid_data[AXIS_X].sum, pid_data[AXIS_Y].sum, pid_data[AXIS_X].sum, pid_data[AXIS_Y].sum, pwm_loop_timer);
+    set_propeller_pin_high(receiver_channel_data->channel[2], pwm_loop_timer);
+    set_fin_angles(pid_fin_data[AXIS_X].sum, pid_fin_data[AXIS_Y].sum, pid_fin_data[AXIS_X].sum, pid_fin_data[AXIS_Y].sum, pwm_loop_timer);
 
     if (loop_counter % 10 == 0) {
         indicator_green_blink();
     }
+
+    do {
+        pwm_loop_timer = micros();
+    } while (update_propeller(pwm_loop_timer) | update_fins(pwm_loop_timer));
 
 #ifdef SERIAL_DATA
     // Serial.print(gyro_data.value[0]); Serial.print(",");
@@ -214,26 +232,24 @@ void loop() {
     // Serial.print(imu_data.ay); Serial.print(",");
     // Serial.print(imu_data.az); Serial.print(",");
 
-    // Serial.print(angle->value[0]); Serial.print(",");
-    // Serial.print(angle->value[1]); Serial.print(",");
+    Serial.print(filtered_angle->value[0] / 90.0); Serial.print(",");
+    // Serial.print(filtered_angle->value[1]); Serial.print(",");
     // Serial.print(angle->value[2]); Serial.print(",");
 
-    // Serial.print(pid_data[0].sum); Serial.print(",");
-    // Serial.print(pid_data[1].sum); Serial.print(",");
-    // Serial.print(pid_data[2].sum); Serial.print(",");
+    Serial.print(pid_fin_data[0].sum / pid_get_angle()); Serial.print(",");
+    // Serial.print(pid_fin_data[1].sum); Serial.print(",");
+    // Serial.print(pid_fin_data[2].sum); Serial.print(",");
 
-    pid_coefficient_t* pppp = pid_get();
-
-    Serial.print(pppp[0].Kp); Serial.print(", ");
+    // pid_coefficient_t* pppp = pid_get();
+    // Serial.print(pppp[0].Kp); Serial.print(", ");
     // Serial.print(pppp[0].Ki); Serial.print(", ");
-    Serial.print(pppp[0].Kd);
+    // Serial.print(pppp[0].Kd);
+
+    Serial.print(get_propeller_input()); Serial.print(",");
 
     Serial.println("");
 #endif
 
-    do {
-        pwm_loop_timer = micros();
-    } while (update_propeller(pwm_loop_timer) || update_fins(pwm_loop_timer));
 
 #endif
 

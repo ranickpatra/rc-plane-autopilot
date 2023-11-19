@@ -4,6 +4,10 @@
 #define LOOP_TIME 0.01                // loop time in seconds
 #define LOOP_TIME_INVERSE 100        // inverse of loop time 1/LOOP_TIME
 
+// #define LOOP_TIME_MICROSECONDS 20000  // loop time in micro seconds
+// #define LOOP_TIME 0.02                // loop time in seconds
+// #define LOOP_TIME_INVERSE 50        // inverse of loop time 1/LOOP_TIME
+
 
 // Indicators
 #define INDICATOR_DDR DDRC
@@ -22,12 +26,14 @@
 #define PROPELLER_PIN PB4
 
 // fins
-#define FIN_PULSE_MAX 2000
-#define FIN_PULSE_MIN 1000
+#define ACTUATOR_PULSE_MAX 2000
+#define ACTUATOR_PULSE_MIN 1000
 #define FIN_1_DIRECTION_REV
 // #define FIN_2_DIRECTION_REV
 // #define FIN_3_DIRECTION_REV
 // #define FIN_4_DIRECTION_REV
+#define FIN_MAX_ANGLE 20.0
+#define FIN_MIN_ANGLE -20.0
 
 // receiver
 #define RECEIVER_CHANNEL_COUNT 4
