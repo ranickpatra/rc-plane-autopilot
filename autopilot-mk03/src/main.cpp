@@ -156,6 +156,7 @@ void loop() {
 #ifdef FLIGHT
 
 #ifdef SERIAL_DATA
+    start_time_count();
     if (Serial.available()) {
         char ch = Serial.read();
         switch (ch)
@@ -166,12 +167,9 @@ void loop() {
         case 'd':
             pid_set_d(Serial.parseFloat());
             break;
-        case 'a':
-            pid_set_angle(Serial.parseFloat());
-            break;
-        case 'c':
-            pid_set_with_curve(Serial.parseInt());
-            break;
+        // case 'a':
+        //     pid_set_angle(Serial.parseFloat());
+        //     break;
         }
 
         while (Serial.available())
@@ -188,8 +186,6 @@ void loop() {
 
     // calculate angle
     // 180 / PI = 57.295779513
-    // accl_angle[0] = atan2f(imu_data.ay, sqrtf(imu_data.ax * imu_data.ax + imu_data.az * imu_data.az)) * RAD_2_DEGREE;
-    // accl_angle[1] = atan2f(imu_data.ax, sqrtf(imu_data.ay * imu_data.ay + imu_data.az * imu_data.az)) * RAD_2_DEGREE;
     accl_angle.value[0] = degrees(atan2f(imu_data.ay, sqrtf(imu_data.ax * imu_data.ax + imu_data.az * imu_data.az)));
     accl_angle.value[1] = degrees(atan2f(-imu_data.ax, sqrtf(imu_data.ay * imu_data.ay + imu_data.az * imu_data.az)));
     accl_angle.value[2] = 0;
@@ -223,6 +219,8 @@ void loop() {
         pwm_loop_timer = micros();
     } while (update_propeller(pwm_loop_timer) | update_fins(pwm_loop_timer));
 
+    end_time_count();
+
 #ifdef SERIAL_DATA
     // Serial.print(gyro_data.value[0]); Serial.print(",");
     // Serial.print(gyro_data.value[1]); Serial.print(",");
@@ -233,10 +231,11 @@ void loop() {
     // Serial.print(imu_data.az); Serial.print(",");
 
     Serial.print(filtered_angle->value[0] / 90.0); Serial.print(",");
+    // Serial.print(filtered_angle->value[0]); Serial.print(",");
     // Serial.print(filtered_angle->value[1]); Serial.print(",");
     // Serial.print(angle->value[2]); Serial.print(",");
 
-    Serial.print(pid_fin_data[0].sum / pid_get_angle()); Serial.print(",");
+    Serial.print(pid_fin_data[0].sum / 30.0); Serial.print(",");
     // Serial.print(pid_fin_data[1].sum); Serial.print(",");
     // Serial.print(pid_fin_data[2].sum); Serial.print(",");
 
@@ -245,7 +244,12 @@ void loop() {
     // Serial.print(pppp[0].Ki); Serial.print(", ");
     // Serial.print(pppp[0].Kd);
 
+    
+
     Serial.print(get_propeller_input()); Serial.print(",");
+
+    // time
+    // Serial.print(get_time_count()); Serial.print(",");
 
     Serial.println("");
 #endif

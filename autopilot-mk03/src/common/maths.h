@@ -43,3 +43,9 @@ bool matrix_inverse_f(matrix_3x3f_t *mat, matrix_3x3f_t *mat_inv);
 void matrix_copy_f(matrix_3x3f_t *src, matrix_3x3f_t *dest);
 
 
+// general
+// --------------------------------------------
+// float sqrt_newton_raphson(float s);
+float sqrt_newton_raphson(double s);
+// float sqrt_approx(float value);
+void solve_quadratic(double a, double b, double c, double y, double &x1, double &x2, uint8_t &numRoots);

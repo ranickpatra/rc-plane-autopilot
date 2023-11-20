@@ -27,6 +27,5 @@ pid_coefficient_t* pid_get();
 pid_data_t* pid_get_data();
 
 // TODO remove
-void pid_set_angle(float f);
-float pid_get_angle();
-void pid_set_with_curve(uint8_t i);
+// void pid_set_angle(float f);
+// float pid_get_angle();
