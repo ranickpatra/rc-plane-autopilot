@@ -28,7 +28,7 @@ void receiver_on_interrupt() {
     receiver_current_time = micros();  // read current time in microseconds
 
     // Channel 1
-    if (RECEIVER_PIN & RECEIVER_CHANNEL_1_PIN_BIT) {
+    if (RECEIVER_PORT & RECEIVER_CHANNEL_1_PIN_BIT) {
         if (receiver_channel_states[0] == 0) {
             receiver_channel_states[0] = 1;
             receiver_timers[0] = receiver_current_time;
@@ -39,7 +39,7 @@ void receiver_on_interrupt() {
     }
 
     // Channel 2
-    if (RECEIVER_PIN & RECEIVER_CHANNEL_2_PIN_BIT) {
+    if (RECEIVER_PORT & RECEIVER_CHANNEL_2_PIN_BIT) {
         if (receiver_channel_states[1] == 0) {
             receiver_channel_states[1] = 1;
             receiver_timers[1] = receiver_current_time;
@@ -50,7 +50,7 @@ void receiver_on_interrupt() {
     }
 
     // Channel 3
-    if (RECEIVER_PIN & RECEIVER_CHANNEL_3_PIN_BIT) {
+    if (RECEIVER_PORT & RECEIVER_CHANNEL_3_PIN_BIT) {
         if (receiver_channel_states[2] == 0) {
             receiver_channel_states[2] = 1;
             receiver_timers[2] = receiver_current_time;
@@ -61,7 +61,7 @@ void receiver_on_interrupt() {
     }
 
     // Channel 4
-    if (RECEIVER_PIN & RECEIVER_CHANNEL_4_PIN_BIT) {
+    if (RECEIVER_PORT & RECEIVER_CHANNEL_4_PIN_BIT) {
         if (receiver_channel_states[3] == 0) {
             receiver_channel_states[3] = 1;
             receiver_timers[3] = receiver_current_time;

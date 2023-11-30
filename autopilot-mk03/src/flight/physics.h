@@ -2,7 +2,9 @@
 
 #include <Arduino.h>
 
-#define MAX_PROP_WIND_SPEED 20.0  // ms^-1
+// #define MAX_PROP_WIND_SPEED 20.0  // ms^-1
+#define PROPELLER_PITCH (10.67 / 100) // m
+#define PROPELLER_SLIP 0.2 // 20%
 #define DENSITY_OF_AIR 1.293      // Kgm^-3
 #define AREA_OF_FIN 0.003334      // m^2
 #define FIN_MAX_COEF_OF_LIFT_ANGLE 30.0

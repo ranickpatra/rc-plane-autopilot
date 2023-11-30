@@ -120,15 +120,6 @@ void matrix_copy_f(matrix_3x3f_t *src, matrix_3x3f_t *dest) {
     memccpy(dest, src, 1, 36);
 }
 
-// def sqrt_newton_raphson(S, max_iters=10, tolerance=1e-6):
-//     x = S / 2  # Initial guess
-//     for _ in range(max_iters):
-//         # prev_x = x
-//         x = (x + S / x) / 2
-//         # if abs(x - prev_x) < tolerance:
-//         #     break
-//     return x
-
 // squareroot
 // float sqrt_newton_raphson(float s) {
 //     tmp1_f = s * 0.5;                      // initial guess
@@ -172,7 +163,6 @@ void solve_quadratic(double a, double b, double c, double y, double &x1, double 
     tmp2_d = b * b - 4 * a * tmp1_d;  // discriminant
 
     if (tmp2_d > 0) {
-        // tmp2_d = sqrt_approx(tmp2_d);
         tmp2_d = sqrt_newton_raphson(tmp2_d);
         x1 = (-b + tmp2_d) / (2 * a);
         x2 = (-b - tmp2_d) / (2 * a);

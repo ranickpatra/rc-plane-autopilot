@@ -6,10 +6,13 @@
  *                          1
  * -----------------------------------------------------
  *   1
- *  --- x density_of_air x area_of_fin x max_airspeed^2
+ *  --- x density_of_air x area_of_fin x airspeed^2
  *   2
  */
-#define ROW_A_V_INVERSE (2 / (DENSITY_OF_AIR * AREA_OF_FIN * MAX_PROP_WIND_SPEED * MAX_PROP_WIND_SPEED))
+// #define ROW_A_V_INVERSE (2 / (DENSITY_OF_AIR * AREA_OF_FIN * MAX_PROP_WIND_SPEED * MAX_PROP_WIND_SPEED))
+#define CONST_1 (PROPELLER_PITCH * (1 - PROPELLER_SLIP))
+#define CONST_2 (2 / (DENSITY_OF_AIR * AREA_OF_FIN * CONST_1 * CONST_1))
+
 
 double fin_lift_coeff_equation[3] = FIN_COEFF_LIFT_EQUATION;
 double fin_coeff_of_lift;
@@ -18,7 +21,8 @@ uint8_t quadratic_roots_count;
 
 double physics_get_fin_angle_from_force(double force, float prop_speed) {
     // get the coeff of lift required for that propeler speed
-    fin_coeff_of_lift = abs(force) * ROW_A_V_INVERSE / (prop_speed * prop_speed);
+    // fin_coeff_of_lift = abs(force) * ROW_A_V_INVERSE / (prop_speed * prop_speed);
+    fin_coeff_of_lift = abs(force) * CONST_2 / (prop_speed * prop_speed);
 
     if (fin_coeff_of_lift < 0.0) fin_coeff_of_lift = 0;
 

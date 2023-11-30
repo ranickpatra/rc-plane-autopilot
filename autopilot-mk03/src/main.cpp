@@ -11,6 +11,7 @@
 #include "io/fin.h"
 #include "io/interrupts.h"
 #include "io/propeller.h"
+#include "sensors/prop_rpm_sensor.h"
 
 imu_raw_t imu_raw_data;
 imu_data_t imu_data;
@@ -180,6 +181,7 @@ void loop() {
 #endif
 
     receiver_update();
+    propeller_rpm_sensor_update();
     // read imu data
     imu_read_data();
     imu_get_data(&imu_data);
@@ -245,8 +247,7 @@ void loop() {
     // Serial.print(pppp[0].Kd);
 
     
-
-    Serial.print(get_propeller_input()); Serial.print(",");
+    Serial.print(propeller_rpm_sensor_get_speed()); Serial.print(",");
 
     // time
     // Serial.print(get_time_count()); Serial.print(",");

@@ -5,6 +5,7 @@
 #include "common/filter.h"
 #include "io/propeller.h"
 #include "physics.h"
+#include "sensors/prop_rpm_sensor.h"
 
 // pid_coefficient_t pid_coefficients[FLIGHT_DYMANICS_INDEX_COUNT] = {
 //         {5.0, 0.0, 1},
@@ -23,9 +24,7 @@ pid_data_t pid_data[FLIGHT_DYMANICS_INDEX_COUNT] = {
 };
 float factor = 0.001;
 
-// float prop_input_inverse_quad_value = 0;
 float prop_speed;
-// float fin_max_range = 10.0;
 
 matrix_3f_t target_angles = {.value = {0.0, 0.0, 0.0}};
 float errors[FLIGHT_DYMANICS_INDEX_COUNT], prev_errors[FLIGHT_DYMANICS_INDEX_COUNT];
@@ -80,10 +79,7 @@ void pid_update(matrix_3f_t* angles) {
     prev_errors[FD_PITCH] = errors[FD_PITCH];
     prev_errors[FD_YAW] = errors[FD_YAW];
 
-    prop_speed = get_propeller_input();
-    if(prop_speed > 1.0) prop_speed = 1.0;
-    else if (prop_speed < 0.1) prop_speed = 0.1;
-
+    prop_speed = propeller_rpm_sensor_get_speed();
     pid_data[FD_ROLL].sum = physics_get_fin_angle_from_force(pid_data[FD_ROLL].sum * 0.5 * factor, prop_speed);
     pid_data[FD_PITCH].sum = physics_get_fin_angle_from_force(pid_data[FD_PITCH].sum * 0.5 * factor, prop_speed);
 }
