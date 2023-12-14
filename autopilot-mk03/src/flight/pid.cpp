@@ -79,7 +79,7 @@ void pid_update(matrix_3f_t* angles) {
     prev_errors[FD_PITCH] = errors[FD_PITCH];
     prev_errors[FD_YAW] = errors[FD_YAW];
 
-    prop_speed = propeller_rpm_sensor_get_speed();
+    prop_speed = propeller_rpm_sensor_get_speed_rps();
     pid_data[FD_ROLL].sum = physics_get_fin_angle_from_force(pid_data[FD_ROLL].sum * 0.5 * factor, prop_speed);
     pid_data[FD_PITCH].sum = physics_get_fin_angle_from_force(pid_data[FD_PITCH].sum * 0.5 * factor, prop_speed);
 }

@@ -17,18 +17,6 @@ void propeller_rpm_sensor_init() {
 }
 
 void propeller_rpm_sensor_on_interrupt() {
-    // // Channel 1
-    // if (RECEIVER_PORT & RECEIVER_CHANNEL_1_PIN_BIT) {
-    //     if (receiver_channel_states[0] == 0) {
-    //         receiver_channel_states[0] = 1;
-    //         receiver_timers[0] = receiver_current_time;
-    //     }
-    // } else if (receiver_channel_states[0] == 1) {
-    //     receiver_channel_states[0] = 0;
-    //     receiver_input.channel[0] = receiver_current_time - receiver_timers[0];
-    // }
-
-    // propeller_blade_pass_count++;
     if (PROP_RPM_SENSOR_PORT & PROPELLER_RPM_SENSOR_PIN_BIT) {
         if (propeller_rpm_sensor_state == 0) {
             propeller_rpm_sensor_state = 1;
@@ -48,6 +36,6 @@ void propeller_rpm_sensor_update() {
     propeller_rpm_sensor_prev_update_time = millis();
 }
 
-float propeller_rpm_sensor_get_speed() {
+float propeller_rpm_sensor_get_speed_rps() {
     return propeller_speed;
 }

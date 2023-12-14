@@ -18,7 +18,7 @@ imu_data_t imu_data;
 matrix_3f_t accl_angle;
 matrix_3f_t gyro_data;
 unsigned long loop_time, pwm_loop_timer;
-receiver_channel_data_t* receiver_channel_data;
+receiver_channel_data_t *receiver_channel_data;
 
 matrix_3f_t *filtered_angle;
 pid_data_t *pid_fin_data;
@@ -160,24 +160,21 @@ void loop() {
     start_time_count();
     if (Serial.available()) {
         char ch = Serial.read();
-        switch (ch)
-        {
-        case 'p':
-            pid_set_p(Serial.parseFloat());
-            break;
-        case 'd':
-            pid_set_d(Serial.parseFloat());
-            break;
-        // case 'a':
-        //     pid_set_angle(Serial.parseFloat());
-        //     break;
+        switch (ch) {
+            case 'p':
+                pid_set_p(Serial.parseFloat());
+                break;
+            case 'd':
+                pid_set_d(Serial.parseFloat());
+                break;
+                // case 'a':
+                //     pid_set_angle(Serial.parseFloat());
+                //     break;
         }
 
-        while (Serial.available())
-            Serial.read();
-        
+        while (Serial.available()) Serial.read();
     }
-    
+
 #endif
 
     receiver_update();
@@ -200,10 +197,9 @@ void loop() {
 
     filtered_angle = ekf_get_state();  // getting the orientation of the craft
 
-    receiver_channel_data = receiver_get_channel_data();    // read receiver channel
-    set_target_angle((((int16_t)receiver_channel_data->channel[0]) - 1500)*45/500,
-    (((int16_t)receiver_channel_data->channel[1]) - 1500)*45/500,
-    0);
+    receiver_channel_data = receiver_get_channel_data();  // read receiver channel
+    set_target_angle((((int16_t)receiver_channel_data->channel[0]) - 1500) * 45 / 500,
+                     (((int16_t)receiver_channel_data->channel[1]) - 1500) * 45 / 500, 0);
 
     pid_update(filtered_angle);
 
@@ -246,15 +242,13 @@ void loop() {
     // Serial.print(pppp[0].Ki); Serial.print(", ");
     // Serial.print(pppp[0].Kd);
 
-    
-    Serial.print(propeller_rpm_sensor_get_speed()); Serial.print(",");
+    Serial.print(propeller_rpm_sensor_get_speed_rps()); Serial.print(",");
 
     // time
     // Serial.print(get_time_count()); Serial.print(",");
 
     Serial.println("");
 #endif
-
 
 #endif
 
