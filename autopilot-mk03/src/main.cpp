@@ -109,7 +109,7 @@ void loop() {
 
 #endif
 
-#ifdef PROPELLER_TESTj
+#ifdef PROPELLER_TEST
     uint16_t pulse_time = 1000;
 
 #ifdef PROPELLER_ESC_CALIBRATION

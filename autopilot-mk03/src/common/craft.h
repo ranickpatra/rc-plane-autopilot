@@ -32,8 +32,8 @@
 // #define FIN_2_DIRECTION_REV
 // #define FIN_3_DIRECTION_REV
 // #define FIN_4_DIRECTION_REV
-#define FIN_MAX_ANGLE 20.0
-#define FIN_MIN_ANGLE -20.0
+#define FIN_MAX_ANGLE 30.0
+#define FIN_MIN_ANGLE -30.0
 
 // receiver
 #define RECEIVER_CHANNEL_COUNT 4

@@ -22,7 +22,8 @@ pid_data_t pid_data[FLIGHT_DYMANICS_INDEX_COUNT] = {
         {0.0, 0.0, 0.0, 0.0},
         {0.0, 0.0, 0.0, 0.0},
 };
-float factor = 0.001;
+// float factor = 0.001;
+double factor = 0.0017696;
 
 float prop_speed;
 
@@ -52,17 +53,17 @@ void pid_update(matrix_3f_t* angles) {
     // errors_dt.value[FD_PITCH] = errors[FD_PITCH] - prev_errors[FD_PITCH];
     // errors_dt.value[FD_YAW] = errors[FD_YAW] - prev_errors[FD_YAW];
 
-    if (errors[FD_ROLL] > -5.0 && errors[FD_ROLL] < 5.0)
+    if (abs(errors[FD_ROLL]) < 5.0)
         pid_data[FD_ROLL].I += pid_coefficients[FD_ROLL].Ki * errors[FD_ROLL];
     else
         pid_data[FD_ROLL].I = 0;
 
-    if (errors[FD_PITCH] > -5.0 && errors[FD_PITCH] < 5.0)
+    if (abs(errors[FD_PITCH]) < 5.0)
         pid_data[FD_PITCH].I += pid_coefficients[FD_PITCH].Ki * errors[FD_PITCH];
     else
         pid_data[FD_PITCH].I = 0;
 
-    if (errors[FD_YAW] > -5.0 && errors[FD_YAW] < 5.0)
+    if (abs(errors[FD_YAW]) < 5.0)
         pid_data[FD_YAW].I += pid_coefficients[FD_YAW].Ki * errors[FD_YAW];
     else
         pid_data[FD_YAW].I = 0;
