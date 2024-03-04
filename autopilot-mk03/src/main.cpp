@@ -228,12 +228,12 @@ void loop() {
     // Serial.print(imu_data.ay); Serial.print(",");
     // Serial.print(imu_data.az); Serial.print(",");
 
-    Serial.print(filtered_angle->value[0] / 90.0); Serial.print(",");
-    // Serial.print(filtered_angle->value[0]); Serial.print(",");
-    // Serial.print(filtered_angle->value[1]); Serial.print(",");
+    // Serial.print(filtered_angle->value[0] / 90.0); Serial.print(",");
+    Serial.print(filtered_angle->value[0]); Serial.print(",");
+    Serial.print(filtered_angle->value[1]); Serial.print(",");
     // Serial.print(angle->value[2]); Serial.print(",");
 
-    Serial.print(pid_fin_data[0].sum / 30.0); Serial.print(",");
+    // Serial.print(pid_fin_data[0].sum); Serial.print(",");
     // Serial.print(pid_fin_data[1].sum); Serial.print(",");
     // Serial.print(pid_fin_data[2].sum); Serial.print(",");
 
