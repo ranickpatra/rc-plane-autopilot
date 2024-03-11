@@ -63,3 +63,21 @@
 // IMU
 #define IMU_CALIBRATION_STEPS 2000  // steps to calibrate the IMU
 #define IMU_CALIBRATION_DATA { -80, 78, -12, 0, 0, 0 }
+
+
+
+
+
+
+
+
+
+
+enum fin_index_index_e {
+  FIN_1=0,
+  FIN_2,
+  FIN_3,
+  FIN_4
+};
+
+#define FIN_COUNT 4

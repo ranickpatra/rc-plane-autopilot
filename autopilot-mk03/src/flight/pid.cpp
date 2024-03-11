@@ -102,14 +102,14 @@ void pid_update(matrix_3f_t* angles) {
 
     // TODO calculate force for each fin
     pid_fin_angles[0] = (pid_data[FD_ROLL].sum * 0.5 + pid_data[FD_YAW].sum * 0.25) * factor;
-    pid_fin_angles[1] = (pid_data[FD_PITCH].sum * 0.5 - pid_data[FD_YAW].sum * 0.25) * factor;
+    pid_fin_angles[1] = (pid_data[FD_PITCH].sum * 0.5 + pid_data[FD_YAW].sum * 0.25) * factor;
     pid_fin_angles[2] = (pid_data[FD_ROLL].sum * 0.5 - pid_data[FD_YAW].sum * 0.25) * factor;
-    pid_fin_angles[3] = (pid_data[FD_PITCH].sum * 0.5 + pid_data[FD_YAW].sum * 0.25) * factor;
+    pid_fin_angles[3] = (pid_data[FD_PITCH].sum * 0.5 - pid_data[FD_YAW].sum * 0.25) * factor;
 
     pid_fin_angles[0] = physics_get_fin_angle_from_force(pid_fin_angles[0], prop_speed);
-    pid_fin_angles[1] = physics_get_fin_angle_from_force(pid_fin_angles[1], prop_speed);
+    pid_fin_angles[1] = -physics_get_fin_angle_from_force(pid_fin_angles[1], prop_speed);
     pid_fin_angles[2] = physics_get_fin_angle_from_force(pid_fin_angles[2], prop_speed);
-    pid_fin_angles[3] = physics_get_fin_angle_from_force(pid_fin_angles[3], prop_speed);
+    pid_fin_angles[3] = -physics_get_fin_angle_from_force(pid_fin_angles[3], prop_speed);
 }
 
 pid_data_t* pid_get_data() {

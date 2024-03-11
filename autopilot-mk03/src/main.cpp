@@ -213,7 +213,7 @@ void loop() {
     pwm_loop_timer = micros();
     set_propeller_pin_high(receiver_channel_data->channel[2], pwm_loop_timer);
     // set_fin_angles(pid_fin_data[AXIS_X].sum, pid_fin_data[AXIS_Y].sum, pid_fin_data[AXIS_X].sum, pid_fin_data[AXIS_Y].sum, pwm_loop_timer);
-    set_fin_angles(fin_angles[0], fin_angles[1], fin_angles[2], fin_angles[3], pwm_loop_timer);
+    set_fin_angles(fin_angles[FIN_1], fin_angles[FIN_2], fin_angles[FIN_3], fin_angles[FIN_4], pwm_loop_timer);
 
     if (loop_counter % 10 == 0) {
         indicator_green_blink();
@@ -234,17 +234,14 @@ void loop() {
     // Serial.print(imu_data.ay); Serial.print(",");
     // Serial.print(imu_data.az); Serial.print(",");
 
-    // Serial.print(filtered_angle->value[0] / 90.0); Serial.print(",");
-    Serial.print(filtered_angle->value[0]);
-    Serial.print(",");
-    Serial.print(filtered_angle->value[1]);
-    Serial.print(",");
-    Serial.print(filtered_angle->value[2]);
-    Serial.print(",");
+    // Serial.print(filtered_angle->value[FD_ROLL]); Serial.print(",");
+    // Serial.print(filtered_angle->value[FD_PITCH]); Serial.print(",");
+    Serial.print(filtered_angle->value[FD_YAW]); Serial.print(",");
 
-    // Serial.print(pid_fin_data[0].sum); Serial.print(",");
-    // Serial.print(pid_fin_data[1].sum); Serial.print(",");
-    // Serial.print(pid_fin_data[2].sum); Serial.print(",");
+    Serial.print(fin_angles[FIN_1]); Serial.print(",");
+    Serial.print(fin_angles[FIN_2]); Serial.print(",");
+    Serial.print(fin_angles[FIN_3]); Serial.print(",");
+    Serial.print(fin_angles[FIN_4]); Serial.print(",");
 
     // pid_coefficient_t* pppp = pid_get();
     // Serial.print(pppp[0].Kp); Serial.print(", ");
