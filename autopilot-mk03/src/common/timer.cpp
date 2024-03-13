@@ -1,17 +1,17 @@
 #include "timer.h"
 
 
-unsigned long time_count;
+unsigned long timer_time_count;
 
 
-void start_time_count() {
-    time_count = micros();
+void timer_start_time_count() {
+    timer_time_count = micros();
 }
-void end_time_count() {
-    time_count = micros() - time_count;
+void timer_end_time_count() {
+    timer_time_count = micros() - timer_time_count;
 }
 
 
-unsigned long get_time_count() {
-    return time_count;
+unsigned long timer_get_time_count() {
+    return timer_time_count;
 }

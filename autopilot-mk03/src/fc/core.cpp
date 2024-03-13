@@ -2,6 +2,6 @@
 #include "common/maths.h"
 
 
-void inner_loop() {
+void core_inner_loop() {
   // constrain(5, 10, 20);
 }

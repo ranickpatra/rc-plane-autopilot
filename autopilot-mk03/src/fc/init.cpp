@@ -9,9 +9,9 @@
 #include "flight/pid.h"
 #include "states.h"
 
-systemState_e system_state = SYSTEM_STATE_INITIALISING;
+systemState_e states_system_state = SYSTEM_STATE_INITIALISING;
 
-void fc_init() {
+void init_fc_init() {
     receiver_init();
     indicator_init();
     propeller_init();

@@ -74,10 +74,10 @@
 
 
 enum fin_index_index_e {
-  FIN_1=0,
-  FIN_2,
-  FIN_3,
-  FIN_4
+  FIN1=0,
+  FIN2,
+  FIN3,
+  FIN4
 };
 
 #define FIN_COUNT 4

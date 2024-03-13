@@ -4,4 +4,4 @@
 
 
 
-void fc_init();
+void init_fc_init();

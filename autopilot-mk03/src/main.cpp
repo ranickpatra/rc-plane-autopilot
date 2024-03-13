@@ -6,6 +6,7 @@
 #include "common/timer.h"
 #include "fc/init.h"
 #include "fc/states.h"
+#include "flight/flight_control_system.h"
 #include "flight/imu.h"
 #include "flight/pid.h"
 #include "io/fin.h"
@@ -13,21 +14,20 @@
 #include "io/propeller.h"
 #include "sensors/prop_rpm_sensor.h"
 
-imu_raw_t imu_raw_data;
-imu_data_t imu_data;
-matrix_3f_t accl_angle;
-matrix_3f_t gyro_data;
-unsigned long loop_time, pwm_loop_timer;
-receiver_channel_data_t *receiver_channel_data;
+imu_raw_t main_imu_raw_data;
+imu_data_t main_imu_data;
+matrix_3f_t main_accl_angle;
+matrix_3f_t main__gyro_data;
+unsigned long main_loop_time, main_pwm_loop_timer;
+receiver_channel_data_t *main_receiver_channel_data;
 
-matrix_3f_t *filtered_angle;
-pid_data_t *pid_fin_data;
-float *fin_angles;
+matrix_3f_t *main_filtered_angle;
+float *main_fin_angles;
 
-uint8_t loop_counter = 0;
+uint8_t main_loop_counter = 0;
 
 void setup() {
-    fc_init();
+    init_fc_init();
 
 #ifdef CALIBRATION
     Serial.begin(SERIAL_BAUDRATE);
@@ -46,14 +46,14 @@ void setup() {
 #endif
 
 #ifdef FLIGHT
-    ekf_init(0.04);
+    filter_ekf_init(0.04);
 
 #ifdef SERIAL_DATA
     Serial.begin(SERIAL_BAUDRATE);
 #endif
 
 #endif
-    loop_time = micros();
+    main_loop_time = micros();
 }
 
 void loop() {
@@ -158,7 +158,7 @@ void loop() {
 #ifdef FLIGHT
 
 #ifdef SERIAL_DATA
-    start_time_count();
+    timer_start_time_count();
     if (Serial.available()) {
         char ch = Serial.read();
         switch (ch) {
@@ -185,45 +185,42 @@ void loop() {
     propeller_rpm_sensor_update();
     // read imu data
     imu_read_data();
-    imu_get_data(&imu_data);
+    imu_get_data(&main_imu_data);
 
     // calculate angle
     // 180 / PI = 57.295779513
-    accl_angle.value[0] = degrees(atan2f(imu_data.ay, sqrtf(imu_data.ax * imu_data.ax + imu_data.az * imu_data.az)));
-    accl_angle.value[1] = degrees(atan2f(-imu_data.ax, sqrtf(imu_data.ay * imu_data.ay + imu_data.az * imu_data.az)));
-    accl_angle.value[2] = 0;
+    main_accl_angle.value[0] = degrees(atan2f(main_imu_data.ay, sqrtf(main_imu_data.ax * main_imu_data.ax + main_imu_data.az * main_imu_data.az)));
+    main_accl_angle.value[1] = degrees(atan2f(-main_imu_data.ax, sqrtf(main_imu_data.ay * main_imu_data.ay + main_imu_data.az * main_imu_data.az)));
+    main_accl_angle.value[2] = 0;
 
-    gyro_data.value[0] = imu_data.gx;
-    gyro_data.value[1] = imu_data.gy;
-    gyro_data.value[2] = imu_data.gz;
+    main__gyro_data.value[0] = main_imu_data.gx;
+    main__gyro_data.value[1] = main_imu_data.gy;
+    main__gyro_data.value[2] = main_imu_data.gz;
 
-    ekf_update(&gyro_data, &accl_angle);
+    filter_ekf_update(&main__gyro_data, &main_accl_angle);
 
-    filtered_angle = ekf_get_state();  // getting the orientation of the craft
+    main_filtered_angle = filter_ekf_get_state();  // getting the orientation of the craft
 
-    receiver_channel_data = receiver_get_channel_data();  // read receiver channel
-    set_target_angle((((int16_t)receiver_channel_data->channel[0]) - 1500) * 45 / 500,
-                     (((int16_t)receiver_channel_data->channel[1]) - 1500) * 45 / 500, 0);
+    main_receiver_channel_data = receiver_get_channel_data();  // read receiver channel
+    pid_set_target_angle((((int16_t)main_receiver_channel_data->channel[0]) - 1500) * 45 / 500,
+                         (((int16_t)main_receiver_channel_data->channel[1]) - 1500) * 45 / 500, 0);
 
-    pid_update(filtered_angle);
+    pid_update(main_filtered_angle);
+    main_fin_angles = flight_control_system_get_force_to_fin_angle(pid_get_data());
 
-    // pid_fin_data = pid_get_data();
-    fin_angles = pid_get_fin_angle();
+    main_pwm_loop_timer = micros();
+    propeller_set_pin_high(main_receiver_channel_data->channel[2], main_pwm_loop_timer);
+    fin_set_angles(main_fin_angles[FIN1], main_fin_angles[FIN2], main_fin_angles[FIN3], main_fin_angles[FIN4], main_pwm_loop_timer);
 
-    pwm_loop_timer = micros();
-    set_propeller_pin_high(receiver_channel_data->channel[2], pwm_loop_timer);
-    // set_fin_angles(pid_fin_data[AXIS_X].sum, pid_fin_data[AXIS_Y].sum, pid_fin_data[AXIS_X].sum, pid_fin_data[AXIS_Y].sum, pwm_loop_timer);
-    set_fin_angles(fin_angles[FIN_1], fin_angles[FIN_2], fin_angles[FIN_3], fin_angles[FIN_4], pwm_loop_timer);
-
-    if (loop_counter % 10 == 0) {
+    if (main_loop_counter % 10 == 0) {
         indicator_green_blink();
     }
 
     do {
-        pwm_loop_timer = micros();
-    } while (update_propeller(pwm_loop_timer) | update_fins(pwm_loop_timer));
+        main_pwm_loop_timer = micros();
+    } while (propeller_update(main_pwm_loop_timer) | fin_update(main_pwm_loop_timer));
 
-    end_time_count();
+    timer_end_time_count();
 
 #ifdef SERIAL_DATA
     // Serial.print(gyro_data.value[0]); Serial.print(",");
@@ -234,21 +231,26 @@ void loop() {
     // Serial.print(imu_data.ay); Serial.print(",");
     // Serial.print(imu_data.az); Serial.print(",");
 
-    // Serial.print(filtered_angle->value[FD_ROLL]); Serial.print(",");
-    // Serial.print(filtered_angle->value[FD_PITCH]); Serial.print(",");
-    Serial.print(filtered_angle->value[FD_YAW]); Serial.print(",");
+    Serial.print(main_filtered_angle->value[FD_ROLL]); Serial.print(",");
+    Serial.print(main_filtered_angle->value[FD_PITCH]); Serial.print(",");
+    Serial.print(main_filtered_angle->value[FD_YAW]);
+    Serial.print(",");
 
-    Serial.print(fin_angles[FIN_1]); Serial.print(",");
-    Serial.print(fin_angles[FIN_2]); Serial.print(",");
-    Serial.print(fin_angles[FIN_3]); Serial.print(",");
-    Serial.print(fin_angles[FIN_4]); Serial.print(",");
+    // Serial.print(main_fin_angles[FIN1]);
+    // Serial.print(",");
+    // Serial.print(main_fin_angles[FIN2]);
+    // Serial.print(",");
+    // Serial.print(main_fin_angles[FIN3]);
+    // Serial.print(",");
+    // Serial.print(main_fin_angles[FIN4]);
+    // Serial.print(",");
 
     // pid_coefficient_t* pppp = pid_get();
     // Serial.print(pppp[0].Kp); Serial.print(", ");
     // Serial.print(pppp[0].Ki); Serial.print(", ");
     // Serial.print(pppp[0].Kd);
 
-    // Serial.print(propeller_rpm_sensor_get_speed_rps()); Serial.print(",");
+    Serial.print(propeller_rpm_sensor_get_speed_rps()); Serial.print(",");
 
     // time
     // Serial.print(get_time_count()); Serial.print(",");
@@ -259,10 +261,8 @@ void loop() {
 #endif
 
     // loop time
-    while (micros() - loop_time < LOOP_TIME_MICROSECONDS)
+    while (micros() - main_loop_time < LOOP_TIME_MICROSECONDS)
         ;
-    loop_time = micros();
-    loop_counter++;
+    main_loop_time = micros();
+    main_loop_counter++;
 }
-
-// STM32F103CBT6 -> CC3D
