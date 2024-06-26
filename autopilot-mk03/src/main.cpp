@@ -233,8 +233,7 @@ void loop() {
 
     Serial.print(main_filtered_angle->value[FD_ROLL]); Serial.print(",");
     Serial.print(main_filtered_angle->value[FD_PITCH]); Serial.print(",");
-    Serial.print(main_filtered_angle->value[FD_YAW]);
-    Serial.print(",");
+    Serial.print(main_filtered_angle->value[FD_YAW]); Serial.print(",");
 
     // Serial.print(main_fin_angles[FIN1]);
     // Serial.print(",");

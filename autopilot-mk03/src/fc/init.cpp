@@ -12,8 +12,8 @@
 systemState_e states_system_state = SYSTEM_STATE_INITIALISING;
 
 void init_fc_init() {
-    receiver_init();
     indicator_init();
+    receiver_init();
     propeller_init();
     fin_init();
     pid_init();
