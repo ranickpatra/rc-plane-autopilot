@@ -8,9 +8,9 @@
 #include "sensors/prop_rpm_sensor.h"
 
 pid_coefficient_t pid_coefficients[FLIGHT_DYMANICS_INDEX_COUNT] = {
-        {.Kp = 0.0, .Ki = 0.0, .Kd = 0.0},
-        {.Kp = 0.0, .Ki = 0.0, .Kd = 0.0},
-        {.Kp = 0.0, .Ki = 0.0, .Kd = 0.0},
+        {.Kp = 10.0, .Ki = 0.0, .Kd = 5.0},
+        {.Kp = 10.0, .Ki = 0.0, .Kd = 5.0},
+        {.Kp = 10.0, .Ki = 0.0, .Kd = 5.0},
 };
 
 pid_data_t pid_data[FLIGHT_DYMANICS_INDEX_COUNT] = {
@@ -40,6 +40,13 @@ void pid_update(matrix_3f_t* angles) {
     pid_errors[FD_ROLL] = pid_target_angles.value[FD_ROLL] - angles->value[FD_ROLL];
     pid_errors[FD_PITCH] = pid_target_angles.value[FD_PITCH] - angles->value[FD_PITCH];
     pid_errors[FD_YAW] = pid_target_angles.value[FD_YAW] - angles->value[FD_YAW];
+
+    // normalize
+    if (pid_errors[FD_YAW] > 180.0) {
+        pid_errors[FD_YAW] -= 360.0;
+    } else if (pid_errors[FD_YAW] < -180.0) {
+        pid_errors[FD_YAW] += 360.0;
+    }
 
     // Calculate the Proportional term for each axis using the corresponding PID coefficient
     pid_data[FD_ROLL].P = pid_coefficients[FD_ROLL].Kp * pid_errors[FD_ROLL];
