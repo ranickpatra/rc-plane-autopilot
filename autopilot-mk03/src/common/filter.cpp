@@ -102,6 +102,13 @@ void filter_ekf_update(matrix_3f_t *gyro, matrix_3f_t *acc) {
     filter_ekf_state.value[1] += gyro->value[1] * LOOP_TIME;
     filter_ekf_state.value[2] += gyro->value[2] * LOOP_TIME;
 
+    // normalizing yaw angle
+    if (filter_ekf_state.value[FD_YAW] > 180.0) {
+        filter_ekf_state.value[FD_YAW] -= 360.0;
+    } else if (filter_ekf_state.value[FD_YAW] < -180.0) {
+        filter_ekf_state.value[FD_YAW] += 360.0;
+    }
+
     // Jacobians and other necessary matrices should be computed here
 
     math_matrix_add_f(&filter_ekf_P, &filter_ekf_Q, &filter_ekf_P);

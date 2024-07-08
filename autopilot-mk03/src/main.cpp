@@ -20,6 +20,7 @@ matrix_3f_t main_accl_angle;
 matrix_3f_t main__gyro_data;
 unsigned long main_loop_time, main_pwm_loop_timer;
 receiver_channel_data_t *main_receiver_channel_data;
+// float outer_loop_yaw = 0;
 
 matrix_3f_t *main_filtered_angle;
 float *main_fin_angles;
@@ -201,6 +202,19 @@ void loop() {
 
     main_filtered_angle = filter_ekf_get_state();  // getting the orientation of the craft
 
+    // // outer loop yaw control
+    // if (main_receiver_channel_data->channel[3] < 1450 || main_receiver_channel_data->channel[3] > 1550) {
+    //     // 5 degree / sec
+    //     outer_loop_yaw += ((((float) main_receiver_channel_data->channel[3]) - 1500) * 5 / 500) * LOOP_TIME;
+
+    //     // normalizing yaw angle
+    //     if (outer_loop_yaw > 180.0) {
+    //         outer_loop_yaw -= 360.0;
+    //     } else if (outer_loop_yaw < -180.0) {
+    //         outer_loop_yaw += 360.0;
+    //     }
+    // }
+
     main_receiver_channel_data = receiver_get_channel_data();  // read receiver channel
     pid_set_target_angle((((int16_t)main_receiver_channel_data->channel[0]) - 1500) * 45 / 500,
                          (((int16_t)main_receiver_channel_data->channel[1]) - 1500) * 45 / 500, 0);
@@ -223,33 +237,34 @@ void loop() {
     timer_end_time_count();
 
 #ifdef SERIAL_DATA
-    // Serial.print(gyro_data.value[0]); Serial.print(",");
-    // Serial.print(gyro_data.value[1]); Serial.print(",");
-    // Serial.print(gyro_data.value[2]); Serial.print(",");
+    Serial.print(main_filtered_angle->value[FD_ROLL]);
+    Serial.print(",");
+    Serial.print(main_filtered_angle->value[FD_PITCH]);
+    Serial.print(",");
+    Serial.print(main_filtered_angle->value[FD_YAW]);
+    Serial.print(",");
+    
+    Serial.print(propeller_rpm_sensor_get_speed_rps());
+    Serial.print(",");
 
-    // Serial.print(imu_data.ax); Serial.print(",");
-    // Serial.print(imu_data.ay); Serial.print(",");
-    // Serial.print(imu_data.az); Serial.print(",");
-
-    Serial.print(main_filtered_angle->value[FD_ROLL]); Serial.print(",");
-    Serial.print(main_filtered_angle->value[FD_PITCH]); Serial.print(",");
-    Serial.print(main_filtered_angle->value[FD_YAW]); Serial.print(",");
-
-    // Serial.print(main_fin_angles[FIN1]);
-    // Serial.print(",");
-    // Serial.print(main_fin_angles[FIN2]);
-    // Serial.print(",");
-    // Serial.print(main_fin_angles[FIN3]);
-    // Serial.print(",");
-    // Serial.print(main_fin_angles[FIN4]);
+    // Serial.print(main_receiver_channel_data->channel[0]);
     // Serial.print(",");
 
-    // pid_coefficient_t* pppp = pid_get();
-    // Serial.print(pppp[0].Kp); Serial.print(", ");
-    // Serial.print(pppp[0].Ki); Serial.print(", ");
-    // Serial.print(pppp[0].Kd);
+    // Serial.print(main_receiver_channel_data->channel[1]);
+    // Serial.print(",");
 
-    Serial.print(propeller_rpm_sensor_get_speed_rps()); Serial.print(",");
+
+    // Serial.print(main_receiver_channel_data->channel[2]);
+    //     Serial.print(",");
+
+    // Serial.print(main_receiver_channel_data->channel[3]);
+    //     Serial.print(",");
+
+
+
+    // Serial.print(outer_loop_yaw);
+    // Serial.print(",");
+
 
     // time
     // Serial.print(get_time_count()); Serial.print(",");
@@ -260,8 +275,7 @@ void loop() {
 #endif
 
     // loop time
-    while (micros() - main_loop_time < LOOP_TIME_MICROSECONDS)
-        ;
+    while (micros() - main_loop_time < LOOP_TIME_MICROSECONDS);
     main_loop_time = micros();
     main_loop_counter++;
 }
