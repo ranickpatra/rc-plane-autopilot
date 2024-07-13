@@ -7,28 +7,28 @@
 #if XYZ_AXIS_COUNT == 3
 
 matrix_3x3f_t filter_ekf_P = {.value = {
-                               {1.0, 0.0, 0.0},
-                               {0.0, 1.0, 0.0},
-                               {0.0, 0.0, 1.0},
-                       }};
+                                      {1.0, 0.0, 0.0},
+                                      {0.0, 1.0, 0.0},
+                                      {0.0, 0.0, 1.0},
+                              }};
 
 matrix_3x3f_t filter_ekf_Q = {.value = {
-                               {0.002, 0.0, 0.0},
-                               {0.0, 0.002, 0.0},
-                               {0.0, 0.0, 0.0},
-                       }};
+                                      {0.002, 0.0, 0.0},
+                                      {0.0, 0.002, 0.0},
+                                      {0.0, 0.0, 0.0},
+                              }};
 
 matrix_3x3f_t filter_ekf_R = {.value = {
-                               {100, 0.0, 0.0},
-                               {0.0, 100, 0.0},
-                               {0.0, 0.0, 100},
-                       }};
+                                      {100, 0.0, 0.0},
+                                      {0.0, 100, 0.0},
+                                      {0.0, 0.0, 100},
+                              }};
 
 matrix_3x3f_t filter_ekf_K = {.value = {
-                               {0.0, 0.0, 0.0},
-                               {0.0, 0.0, 0.0},
-                               {0.0, 0.0, 0.0},
-                       }};
+                                      {0.0, 0.0, 0.0},
+                                      {0.0, 0.0, 0.0},
+                                      {0.0, 0.0, 0.0},
+                              }};
 
 matrix_3f_t filter_ekf_state = {.value = {0.0, 0.0, 0.0}};
 matrix_3f_t filter_ekf_residual = {.value = {0.0, 0.0, 0.0}};
@@ -36,10 +36,10 @@ matrix_3f_t filter_ekf_residual = {.value = {0.0, 0.0, 0.0}};
 simple_low_pass_filter_3f_t filter_ekf_low_pass_filter_acc;
 
 matrix_3x3f_t filter_matrix_eye = {.value = {
-                                    {1.0, 0.0, 0.0},
-                                    {0.0, 1.0, 0.0},
-                                    {0.0, 0.0, 1.0},
-                            }};
+                                           {1.0, 0.0, 0.0},
+                                           {0.0, 1.0, 0.0},
+                                           {0.0, 0.0, 1.0},
+                                   }};
 
 #endif
 #endif
@@ -48,6 +48,7 @@ matrix_3x3f_t filter_matrix_eye = {.value = {
 matrix_3x3f_t filter_tmp_matrix_3x3f_1;
 matrix_3x3f_t filter_tmp_matrix_3x3f_2;
 matrix_3f_t filter_tmp_matrix_3f_1;
+float filter_tmp_f_1, filter_tmp_f_2;
 
 void filter_simple_low_pass_filter_init(simple_low_pass_filter_t *filter, float alpha) {
     filter->data = 0;
@@ -101,6 +102,12 @@ void filter_ekf_update(matrix_3f_t *gyro, matrix_3f_t *acc) {
     filter_ekf_state.value[0] += gyro->value[0] * LOOP_TIME;
     filter_ekf_state.value[1] += gyro->value[1] * LOOP_TIME;
     filter_ekf_state.value[2] += gyro->value[2] * LOOP_TIME;
+
+    // transforming roll pitch during yaw
+    filter_tmp_f_1 = -filter_ekf_state.value[FD_ROLL] * sin(filter_ekf_state.value[FD_YAW] * (0.017453 * LOOP_TIME)) + filter_ekf_state.value[FD_PITCH] * cos(filter_ekf_state.value[FD_YAW] * (0.017453 * LOOP_TIME));
+    filter_tmp_f_2 =  filter_ekf_state.value[FD_ROLL] * cos(filter_ekf_state.value[FD_YAW] * (0.017453 * LOOP_TIME)) + filter_ekf_state.value[FD_PITCH] * sin(filter_ekf_state.value[FD_YAW] * (0.017453 * LOOP_TIME));
+    filter_ekf_state.value[FD_PITCH] = filter_tmp_f_1;
+    filter_ekf_state.value[FD_ROLL] = filter_tmp_f_2;
 
     // normalizing yaw angle
     if (filter_ekf_state.value[FD_YAW] > 180.0) {
