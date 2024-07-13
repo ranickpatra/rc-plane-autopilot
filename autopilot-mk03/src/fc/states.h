@@ -10,4 +10,4 @@ enum systemState_e {
 };
 
 
-extern systemState_e system_state;
+extern systemState_e states_system_state;

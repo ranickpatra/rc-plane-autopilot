@@ -1,0 +1,2 @@
+// STM32F103CBT6 -> CC3D
+// STM32F7 > rocket -> https://www.youtube.com/watch?v=KjcOJVJY4hA

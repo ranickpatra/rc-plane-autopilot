@@ -1,3 +1,3 @@
 #pragma once
 
-void inner_loop();
+void core_inner_loop();

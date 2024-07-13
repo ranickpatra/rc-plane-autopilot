@@ -16,42 +16,42 @@
 
 #define SERVO_PINS_ALL (SERVO_PIN_1_BIT | SERVO_PIN_2_BIT | SERVO_PIN_3_BIT | SERVO_PIN_4_BIT)
 
-unsigned long fin_1_time = 0, fin_2_time = 0, fin_3_time = 0, fin_4_time = 0;
+unsigned long fin_fin_1_time = 0, fin_fin_2_time = 0, fin_fin_3_time = 0, fin_fin_4_time = 0;
 
 void fin_init() {
     ACTUATOR_DDR |= SERVO_PINS_ALL;
     ACTUATOR_PORT &= ~SERVO_PINS_ALL;
 }
 
-void set_fin_pins_high(uint16_t f1_time, uint16_t f2_time, uint16_t f3_time, uint16_t f4_time, unsigned long pulse_start_time) {
+void fin_set_pins_high(uint16_t f1_time, uint16_t f2_time, uint16_t f3_time, uint16_t f4_time, unsigned long pulse_start_time) {
     ACTUATOR_PORT |= SERVO_PINS_ALL;
 
 #ifndef FIN_1_DIRECTION_REV
     fin_1_time = pulse_start_time + (f1_time > ACTUATOR_PULSE_MAX ? ACTUATOR_PULSE_MAX : (f1_time < ACTUATOR_PULSE_MIN ? ACTUATOR_PULSE_MIN : f1_time));
 #else
-    fin_1_time = pulse_start_time + FIN_REV_OFFSET - (f1_time > ACTUATOR_PULSE_MAX ? ACTUATOR_PULSE_MAX : (f1_time < ACTUATOR_PULSE_MIN ? ACTUATOR_PULSE_MIN : f1_time));
+    fin_fin_1_time = pulse_start_time + FIN_REV_OFFSET - (f1_time > ACTUATOR_PULSE_MAX ? ACTUATOR_PULSE_MAX : (f1_time < ACTUATOR_PULSE_MIN ? ACTUATOR_PULSE_MIN : f1_time));
 #endif
 
 #ifndef FIN_2_DIRECTION_REV
-    fin_2_time = pulse_start_time + (f2_time > ACTUATOR_PULSE_MAX ? ACTUATOR_PULSE_MAX : (f2_time < ACTUATOR_PULSE_MIN ? ACTUATOR_PULSE_MIN : f2_time));
+    fin_fin_2_time = pulse_start_time + (f2_time > ACTUATOR_PULSE_MAX ? ACTUATOR_PULSE_MAX : (f2_time < ACTUATOR_PULSE_MIN ? ACTUATOR_PULSE_MIN : f2_time));
 #else
     fin_2_time = pulse_start_time + FIN_REV_OFFSET - (f2_time > ACTUATOR_PULSE_MAX ? ACTUATOR_PULSE_MAX : (f2_time < ACTUATOR_PULSE_MIN ? ACTUATOR_PULSE_MIN : f2_time));
 #endif
 
 #ifndef FIN_3_DIRECTION_REV
-    fin_3_time = pulse_start_time + (f3_time > ACTUATOR_PULSE_MAX ? ACTUATOR_PULSE_MAX : (f3_time < ACTUATOR_PULSE_MIN ? ACTUATOR_PULSE_MIN : f3_time));
+    fin_fin_3_time = pulse_start_time + (f3_time > ACTUATOR_PULSE_MAX ? ACTUATOR_PULSE_MAX : (f3_time < ACTUATOR_PULSE_MIN ? ACTUATOR_PULSE_MIN : f3_time));
 #else
     fin_3_time = pulse_start_time + FIN_REV_OFFSET - (f3_time > ACTUATOR_PULSE_MAX ? ACTUATOR_PULSE_MAX : (f3_time < ACTUATOR_PULSE_MIN ? ACTUATOR_PULSE_MIN : f3_time));
 #endif
 
 #ifndef FIN_4_DIRECTION_REV
-    fin_4_time = pulse_start_time + (f4_time > ACTUATOR_PULSE_MAX ? ACTUATOR_PULSE_MAX : (f4_time < ACTUATOR_PULSE_MIN ? ACTUATOR_PULSE_MIN : f4_time));
+    fin_fin_4_time = pulse_start_time + (f4_time > ACTUATOR_PULSE_MAX ? ACTUATOR_PULSE_MAX : (f4_time < ACTUATOR_PULSE_MIN ? ACTUATOR_PULSE_MIN : f4_time));
 #else
     fin_4_time = pulse_start_time + FIN_REV_OFFSET - (f4_time > ACTUATOR_PULSE_MAX ? ACTUATOR_PULSE_MAX : (f4_time < ACTUATOR_PULSE_MIN ? ACTUATOR_PULSE_MIN : f4_time));
 #endif
 }
 
-void set_fin_angles(int16_t f1, int16_t f2, int16_t f3, int16_t f4, unsigned long pulse_start_time) {
+void fin_set_angles(int16_t f1, int16_t f2, int16_t f3, int16_t f4, unsigned long pulse_start_time) {
     // all ping to heigh because in the 1000µs gap 
     // which is the min wait time to stop the pulse 
     // it will do all the calculations necessary to adjust the fin
@@ -63,14 +63,14 @@ void set_fin_angles(int16_t f1, int16_t f2, int16_t f3, int16_t f4, unsigned lon
     f3 = (f3 + FIN_ANGLE_OFFSET) * FIN_ANGLE_TO_PULSE + ACTUATOR_PULSE_MIN;
     f4 = (f4 + FIN_ANGLE_OFFSET) * FIN_ANGLE_TO_PULSE + ACTUATOR_PULSE_MIN;
 
-    set_fin_pins_high((uint16_t) f1, (uint16_t) f2, (uint16_t) f3, (uint16_t) f4, pulse_start_time);
+    fin_set_pins_high((uint16_t) f1, (uint16_t) f2, (uint16_t) f3, (uint16_t) f4, pulse_start_time);
 }
 
-uint8_t update_fins(unsigned long current_time) {
-    if ((current_time > fin_1_time) && (ACTUATOR_PORT & SERVO_PIN_1_BIT)) ACTUATOR_PORT &= ~SERVO_PIN_1_BIT;
-    if ((current_time > fin_2_time) && (ACTUATOR_PORT & SERVO_PIN_2_BIT)) ACTUATOR_PORT &= ~SERVO_PIN_2_BIT;
-    if ((current_time > fin_3_time) && (ACTUATOR_PORT & SERVO_PIN_3_BIT)) ACTUATOR_PORT &= ~SERVO_PIN_3_BIT;
-    if ((current_time > fin_4_time) && (ACTUATOR_PORT & SERVO_PIN_4_BIT)) ACTUATOR_PORT &= ~SERVO_PIN_4_BIT;
+uint8_t fin_update(unsigned long current_time) {
+    if ((current_time > fin_fin_1_time) && (ACTUATOR_PORT & SERVO_PIN_1_BIT)) ACTUATOR_PORT &= ~SERVO_PIN_1_BIT;
+    if ((current_time > fin_fin_2_time) && (ACTUATOR_PORT & SERVO_PIN_2_BIT)) ACTUATOR_PORT &= ~SERVO_PIN_2_BIT;
+    if ((current_time > fin_fin_3_time) && (ACTUATOR_PORT & SERVO_PIN_3_BIT)) ACTUATOR_PORT &= ~SERVO_PIN_3_BIT;
+    if ((current_time > fin_fin_4_time) && (ACTUATOR_PORT & SERVO_PIN_4_BIT)) ACTUATOR_PORT &= ~SERVO_PIN_4_BIT;
 
     return ACTUATOR_PORT & SERVO_PINS_ALL;
 }

@@ -19,10 +19,14 @@
 // servos and motor
 #define ACTUATOR_DDR DDRB
 #define ACTUATOR_PORT PORTB
-#define SERVO_PIN_1 PB2
-#define SERVO_PIN_2 PB3
-#define SERVO_PIN_3 PB0
-#define SERVO_PIN_4 PB1
+// #define SERVO_PIN_1 PB2
+// #define SERVO_PIN_2 PB3
+// #define SERVO_PIN_3 PB0
+// #define SERVO_PIN_4 PB1
+#define SERVO_PIN_1 PB0
+#define SERVO_PIN_2 PB1
+#define SERVO_PIN_3 PB2
+#define SERVO_PIN_4 PB3
 #define PROPELLER_PIN PB4
 
 // fins
@@ -32,13 +36,13 @@
 // #define FIN_2_DIRECTION_REV
 // #define FIN_3_DIRECTION_REV
 // #define FIN_4_DIRECTION_REV
-#define FIN_MAX_ANGLE 20.0
-#define FIN_MIN_ANGLE -20.0
+#define FIN_MAX_ANGLE 30.0
+#define FIN_MIN_ANGLE -30.0
 
 // receiver
 #define RECEIVER_CHANNEL_COUNT 4
 #define RECEIVER_DDR DDRD
-#define RECEIVER_PIN PIND
+#define RECEIVER_PORT PIND
 #define RECEIVER_CHANNEL_1 PD2
 #define RECEIVER_CHANNEL_2 PD3
 #define RECEIVER_CHANNEL_3 PD4
@@ -51,6 +55,33 @@
 #define RECEIVER_PCINT_CHANNEL_3 PCINT20
 #define RECEIVER_PCINT_CHANNEL_4 PCINT21
 
+// RPM sensor
+#define PROP_BLADE_COUNT 3
+#define PROP_RPM_SENSOR_DDR DDRD
+#define PROP_RPM_SENSOR_PORT PIND
+#define PROP_RPM_SENSOR_RPM_SENSOR_PIN PD6
+#define PROP_RPM_SENSOR_PCIE PCIE2
+#define PROP_RPM_SENSOR_PCMSK PCMSK2
+#define PROP_RPM_SENSOR_PCINT PCINT22
+
 // IMU
 #define IMU_CALIBRATION_STEPS 2000  // steps to calibrate the IMU
 #define IMU_CALIBRATION_DATA { -80, 78, -12, 0, 0, 0 }
+
+
+
+
+
+
+
+
+
+
+enum fin_index_index_e {
+  FIN1=0,
+  FIN2,
+  FIN3,
+  FIN4
+};
+
+#define FIN_COUNT 4

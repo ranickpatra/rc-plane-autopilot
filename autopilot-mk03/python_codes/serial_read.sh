@@ -1,2 +1,2 @@
-stty -F /dev/ttyACM0 115200
-cat /dev/ttyACM0 > data.txt
+stty -F /dev/ttyUSB0 115200
+cat /dev/ttyUSB0 > data.txt
