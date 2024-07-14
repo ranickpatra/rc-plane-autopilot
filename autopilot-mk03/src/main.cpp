@@ -182,8 +182,6 @@ void loop() {
 
 #endif
 
-    // FIXIT roll pitch translation during yaw
-
     receiver_update();
     propeller_rpm_sensor_update();
     // read imu data
@@ -262,17 +260,17 @@ void loop() {
     Serial.print(main_filtered_angle->value[FD_YAW]);
     Serial.print(",");
 
-    // Serial.print(propeller_rpm_sensor_get_speed_rps());
-    // Serial.print(",");
+    Serial.print(propeller_rpm_sensor_get_speed_rps());
+    Serial.print(",");
 
-    // Serial.print(main_fin_angles[FIN1]);
-    // Serial.print(",");
-    // Serial.print(main_fin_angles[FIN2]);
-    // Serial.print(",");
-    // Serial.print(main_fin_angles[FIN3]);
-    // Serial.print(",");
-    // Serial.print(main_fin_angles[FIN4]);
-    // Serial.print(",");
+    Serial.print(main_fin_angles[FIN1]);
+    Serial.print(",");
+    Serial.print(main_fin_angles[FIN2]);
+    Serial.print(",");
+    Serial.print(main_fin_angles[FIN3]);
+    Serial.print(",");
+    Serial.print(main_fin_angles[FIN4]);
+    Serial.print(",");
 
     // Serial.print(outer_loop_yaw);
     // Serial.print(",");
