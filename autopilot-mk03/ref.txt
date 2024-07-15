@@ -13,7 +13,7 @@ Alpha     Α	          α
 Beta      Β	          β
 Gamma     Γ	          γ
 Delta     Δ	          δ
-Epsilon   Ε 	        ε
+Epsilon   Ε 	      ε
 Zeta      Ζ	          ζ
 Eta       Η	          η
 Theta     Θ	          θ
