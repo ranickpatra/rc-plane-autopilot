@@ -8,8 +8,8 @@
 #include "sensors/prop_rpm_sensor.h"
 
 pid_coefficient_t pid_coefficients[FLIGHT_DYMANICS_INDEX_COUNT] = {
-        {.Kp = 10.0, .Ki = 0.0, .Kd = 5.0},
-        {.Kp = 10.0, .Ki = 0.0, .Kd = 5.0},
+        {.Kp = 30.0, .Ki = 0.0, .Kd = 10.0},
+        {.Kp = 30.0, .Ki = 0.0, .Kd = 10.0},
         {.Kp = 10.0, .Ki = 0.0, .Kd = 5.0},
 };
 
