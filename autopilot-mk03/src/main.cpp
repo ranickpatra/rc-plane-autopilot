@@ -8,6 +8,7 @@
 #include "fc/states.h"
 #include "flight/flight_control_system.h"
 #include "flight/imu.h"
+#include "flight/physics.h"
 #include "flight/pid.h"
 #include "io/fin.h"
 #include "io/interrupts.h"
@@ -26,6 +27,7 @@ matrix_3f_t *main_filtered_angle;
 float *main_fin_angles;
 
 uint8_t main_loop_counter = 0;
+uint16_t main_prop_thrust = 1000;
 
 void setup() {
     init_fc_init();
@@ -224,8 +226,22 @@ void loop() {
     pid_update(main_filtered_angle);
     main_fin_angles = flight_control_system_get_force_to_fin_angle(pid_get_data());
 
+    // calculations for thrust based on roll and pitch
+    if (main_receiver_channel_data->channel[2] > 1050) {
+        main_prop_thrust =
+                (uint16_t)((main_receiver_channel_data->channel[2] - 1000) *
+                                   physics_get_thrust_from_roll_pitch(main_filtered_angle->value[FD_ROLL], main_filtered_angle->value[FD_PITCH]) +
+                           1000);
+        if (main_prop_thrust < 1000)
+            main_prop_thrust = 1000;
+        else if (main_prop_thrust > 2000)
+            main_prop_thrust = 2000;
+    } else {
+        main_prop_thrust = main_receiver_channel_data->channel[2];
+    }
+
     main_pwm_loop_timer = micros();
-    propeller_set_pin_high(main_receiver_channel_data->channel[2], main_pwm_loop_timer);
+    propeller_set_pin_high(main_prop_thrust, main_pwm_loop_timer);
     fin_set_angles(main_fin_angles[FIN1], main_fin_angles[FIN2], main_fin_angles[FIN3], main_fin_angles[FIN4], main_pwm_loop_timer);
 
     if (main_loop_counter % 10 == 0) {
@@ -263,14 +279,14 @@ void loop() {
     Serial.print(propeller_rpm_sensor_get_speed_rps());
     Serial.print(",");
 
-    Serial.print(main_fin_angles[FIN1]);
-    Serial.print(",");
-    Serial.print(main_fin_angles[FIN2]);
-    Serial.print(",");
-    Serial.print(main_fin_angles[FIN3]);
-    Serial.print(",");
-    Serial.print(main_fin_angles[FIN4]);
-    Serial.print(",");
+    // Serial.print(main_fin_angles[FIN1]);
+    // Serial.print(",");
+    // Serial.print(main_fin_angles[FIN2]);
+    // Serial.print(",");
+    // Serial.print(main_fin_angles[FIN3]);
+    // Serial.print(",");
+    // Serial.print(main_fin_angles[FIN4]);
+    // Serial.print(",");
 
     // Serial.print(outer_loop_yaw);
     // Serial.print(",");
