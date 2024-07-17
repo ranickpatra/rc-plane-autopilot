@@ -104,8 +104,10 @@ void filter_ekf_update(matrix_3f_t *gyro, matrix_3f_t *acc) {
     filter_ekf_state.value[2] += gyro->value[2] * LOOP_TIME;
 
     // transforming roll pitch during yaw
-    filter_tmp_f_1 = -filter_ekf_state.value[FD_ROLL] * sin(filter_ekf_state.value[FD_YAW] * (0.017453 * LOOP_TIME)) + filter_ekf_state.value[FD_PITCH] * cos(filter_ekf_state.value[FD_YAW] * (0.017453 * LOOP_TIME));
-    filter_tmp_f_2 =  filter_ekf_state.value[FD_ROLL] * cos(filter_ekf_state.value[FD_YAW] * (0.017453 * LOOP_TIME)) + filter_ekf_state.value[FD_PITCH] * sin(filter_ekf_state.value[FD_YAW] * (0.017453 * LOOP_TIME));
+    // filter_tmp_f_1 = -filter_ekf_state.value[FD_ROLL] * sin(gyro->value[FD_YAW] * (0.017453 * LOOP_TIME)) + filter_ekf_state.value[FD_PITCH] * cos(gyro->value[FD_YAW] * (0.017453 * LOOP_TIME));
+    // filter_tmp_f_2 =  filter_ekf_state.value[FD_ROLL] * cos(gyro->value[FD_YAW] * (0.017453 * LOOP_TIME)) + filter_ekf_state.value[FD_PITCH] * sin(gyro->value[FD_YAW] * (0.017453 * LOOP_TIME));
+    filter_tmp_f_1 = filter_ekf_state.value[FD_PITCH] - filter_ekf_state.value[FD_ROLL] * sin(gyro->value[FD_YAW] * (0.017453 * LOOP_TIME));
+    filter_tmp_f_2 =  filter_ekf_state.value[FD_ROLL] + filter_ekf_state.value[FD_PITCH] * sin(gyro->value[FD_YAW] * (0.017453 * LOOP_TIME));
     filter_ekf_state.value[FD_PITCH] = filter_tmp_f_1;
     filter_ekf_state.value[FD_ROLL] = filter_tmp_f_2;
 

@@ -58,3 +58,9 @@ double physics_get_fin_angle_from_force(double force, float prop_speed) {
 
     return force > 0.0 ? physics_quadratic_roots[0] : -physics_quadratic_roots[0];
 }
+
+
+
+float physics_get_thrust_from_roll_pitch(float roll, float pitch) {
+    return 1.0 / (cos(abs(roll) * DEG_TO_RAD) * cos(abs(pitch) * DEG_TO_RAD));
+}
