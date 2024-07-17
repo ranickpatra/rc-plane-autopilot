@@ -168,6 +168,9 @@ void loop() {
             case 'p':
                 pid_set_p(Serial.parseFloat());
                 break;
+            case 'i':
+                pid_set_i(Serial.parseFloat());
+                break;
             case 'd':
                 pid_set_d(Serial.parseFloat());
                 break;
