@@ -17,4 +17,5 @@
 
 
 double physics_get_fin_angle_from_force(double force, float prop_speed);
+float physics_get_thrust_from_roll_pitch(float roll, float pitch);
 
