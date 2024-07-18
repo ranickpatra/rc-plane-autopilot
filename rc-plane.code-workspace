@@ -24,6 +24,10 @@
 		{
 			"name": "autopilot-mk03",
 			"path": "autopilot-mk03"
+		},
+		{
+			"name": "MonoCopter",
+			"path": "MonoCopter"
 		}
 	]
 }
